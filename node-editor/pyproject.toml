@@ -1,0 +1,17 @@
+[tool.poetry]
+name = "lowcaf"
+version = "0.1.0"
+description = "A Python-based low-code node-editor for packetprocessing"
+authors = []
+
+[tool.poetry.dependencies]
+python = "^3.10"
+dearpygui = "^1.8.0"
+screeninfo = "^0.8.1"
+numpy = "^1.24.1"
+scapy = "^2.5.0"
+
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
