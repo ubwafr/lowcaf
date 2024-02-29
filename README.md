@@ -1,5 +1,8 @@
 # Welcome to Lowcaf: A Low-Code Protocol Analysis Framework
 
+The Lowcaf Framework allows you to visually analyze communication protocols. In order to make protocol analysis more comprehensible, Lowcaf proposes a low-code-based approach. It allows a native integration of data visualization and a load/store architecture for protocol analysis toolchains and scenarios. Lowcaf also allows manipulating communication traffic in a low-code-based approach. Protocol analysis or manipulation functions can be chained in a row via visually represented and configurable graph nodes.
+
+
 This repository consists of two parts:
 - The Python-based node editor
 - An ns-3 application that connects to the node editor
