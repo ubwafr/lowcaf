@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from src.nodes.jgf.jfgkeys import JEDGE_SOURCE, JEDGE_TARGET, JEDGE_RELATION
+from lowcaf.nodes.jgf.jfgkeys import JEDGE_SOURCE, JEDGE_TARGET, JEDGE_RELATION
 
 
 @dataclass

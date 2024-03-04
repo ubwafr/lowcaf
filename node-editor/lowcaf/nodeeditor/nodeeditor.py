@@ -12,19 +12,19 @@ from typing import Type
 import dearpygui.dearpygui as dpg
 
 import resources.fonts
-import src.nodes
-from src.nodeeditor.nodebuilder import NodeBuilder
-from src.nodeeditor.nodemanager import NodeManager
-from src.nodeeditor.portid import PortID
-from src.nodes.ifaces.inode import INode
-from src.nodes.jgf.jedge import JEdge
-from src.nodes.jgf.jfgkeys import JNODE_ATTR_TYPE, JEDGE_REL_ATTR2
-from src.nodes.jgf.jnode import JNode
-from src.packetprocessing.packetprocessor import PacketProcessor
+import lowcaf.nodes
+from lowcaf.nodeeditor.nodebuilder import NodeBuilder
+from lowcaf.nodeeditor.nodemanager import NodeManager
+from lowcaf.nodeeditor.portid import PortID
+from lowcaf.nodes.ifaces.inode import INode
+from lowcaf.nodes.jgf.jedge import JEdge
+from lowcaf.nodes.jgf.jfgkeys import JNODE_ATTR_TYPE, JEDGE_REL_ATTR2
+from lowcaf.nodes.jgf.jnode import JNode
+from lowcaf.packetprocessing.packetprocessor import PacketProcessor
 
-for x in pkgutil.iter_modules(src.nodes.__path__):
+for x in pkgutil.iter_modules(lowcaf.nodes.__path__):
     print(x.name)
-    importlib.import_module(f'.{x.name}', 'src.nodes')
+    importlib.import_module(f'.{x.name}', 'lowcaf.nodes')
 
 # from screeninfo import get_monitors
 
@@ -570,9 +570,6 @@ class NodeEditor:
                     dpg.add_spacer(height=self.dpcm // 8)
                     dpg.add_separator()
                     dpg.add_spacer(height=self.dpcm // 8)
-                    dpg.add_menu_item(
-                        label='Add Test Nodes',
-                        callback=self.add_test_nodes_cb)
                     dpg.add_menu_item(
                         label='Run BBPacket Processor',
                         callback=self.run_pp_cb

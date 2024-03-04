@@ -3,11 +3,11 @@ from multiprocessing.connection import Connection
 import dearpygui.dearpygui as dpg
 from scapy.all import *
 
-from src.nodeeditor.nodebuilder import NodeBuilder
-from src.nodes.ifaces.inode import INode
-from src.packetprocessing.bbpacket import BBPacket
-from src.nodes.ifaces.rnode import RNode
-from src.nodes.jgf.jnode import JNode
+from lowcaf.nodeeditor.nodebuilder import NodeBuilder
+from lowcaf.nodes.ifaces.inode import INode
+from lowcaf.packetprocessing.bbpacket import BBPacket
+from lowcaf.nodes.ifaces.rnode import RNode
+from lowcaf.nodes.jgf.jnode import JNode
 
 dpg.create_context()
 

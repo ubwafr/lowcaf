@@ -2,7 +2,7 @@ import logging
 import selectors
 from multiprocessing.connection import Connection
 
-from src.packetprocessing.bbsocket import BBSocket, EndOfDataError
+from lowcaf.packetprocessing.bbsocket import BBSocket, EndOfDataError
 
 LOGGER = logging.getLogger(__name__)
 

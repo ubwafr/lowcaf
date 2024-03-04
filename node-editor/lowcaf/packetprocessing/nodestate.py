@@ -1,6 +1,6 @@
 from collections import deque
 
-from src.nodes.ifaces.rnode import RNode
+from lowcaf.nodes.ifaces.rnode import RNode
 
 
 class NodeState:
