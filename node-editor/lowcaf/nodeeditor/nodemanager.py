@@ -1,4 +1,4 @@
-from nodes.ifaces.inode import INode
+from lowcaf.nodes.ifaces.inode import INode
 
 
 class NodeManager:

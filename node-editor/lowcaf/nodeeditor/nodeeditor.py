@@ -571,9 +571,6 @@ class NodeEditor:
                     dpg.add_separator()
                     dpg.add_spacer(height=self.dpcm // 8)
                     dpg.add_menu_item(
-                        label='Add Test Nodes',
-                        callback=self.add_test_nodes_cb)
-                    dpg.add_menu_item(
                         label='Run BBPacket Processor',
                         callback=self.run_pp_cb
                     )
