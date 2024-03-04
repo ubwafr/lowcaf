@@ -3,10 +3,10 @@ from copy import deepcopy
 import dearpygui.dearpygui as dpg
 from collections import deque
 
-from src.nodeeditor.nodebuilder import NodeBuilder
-from src.packetprocessing.bbpacket import BBPacket
-from src.nodes.ifaces.inode import INode
-from src.nodes.ifaces.rnode import RNode
+from lowcaf.nodeeditor.nodebuilder import NodeBuilder
+from lowcaf.packetprocessing.bbpacket import BBPacket
+from lowcaf.nodes.ifaces.inode import INode
+from lowcaf.nodes.ifaces.rnode import RNode
 
 
 class RepeaterG(INode):

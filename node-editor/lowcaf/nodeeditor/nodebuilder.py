@@ -1,5 +1,5 @@
-from src.nodes.ifaces.inode import INode
-from src.nodes.ifaces.rnode import RNode
+from lowcaf.nodes.ifaces.inode import INode
+from lowcaf.nodes.ifaces.rnode import RNode
 
 
 class NodeBuilder:

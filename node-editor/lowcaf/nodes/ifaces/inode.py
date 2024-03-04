@@ -1,10 +1,10 @@
 import dearpygui.dearpygui as dpg
 from abc import ABC, abstractmethod
 
-from src.nodes.jgf.jedge import JEdge
-from src.nodes.jgf.jfgkeys import JEDGE_REL_ATTR_NODE, JEDGE_REL_NODE_ATTR, \
+from lowcaf.nodes.jgf.jedge import JEdge
+from lowcaf.nodes.jgf.jfgkeys import JEDGE_REL_ATTR_NODE, JEDGE_REL_NODE_ATTR, \
     JNODE_ATTR_ID
-from src.nodes.jgf.jnode import JNode
+from lowcaf.nodes.jgf.jnode import JNode
 
 
 class INode(ABC):

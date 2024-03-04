@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from src.nodes.jgf.jfgkeys import JNODE_LABEL, JNODE_METADATA, JNODE_ID, JNODE_TYPE, \
+from lowcaf.nodes.jgf.jfgkeys import JNODE_LABEL, JNODE_METADATA, JNODE_ID, JNODE_TYPE, \
     JNODE_POSITION, JNODE_ADD_METADATA, JNODE_ATTR_TYPE, JNODE_ATTR_ID
 
 

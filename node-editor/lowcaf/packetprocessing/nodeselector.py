@@ -2,12 +2,12 @@ import logging
 from abc import ABC, abstractmethod
 from collections import deque
 
-from src.packetprocessing.nodestate import NodeState
+from lowcaf.packetprocessing.nodestate import NodeState
 
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from src.packetprocessing.packetprocessor import PacketProcessor
+    from lowcaf.packetprocessing.packetprocessor import PacketProcessor
 
 LOGGER = logging.getLogger(__name__)
 

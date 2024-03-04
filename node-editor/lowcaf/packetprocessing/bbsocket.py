@@ -10,7 +10,7 @@ from typing import Optional
 from scapy.compat import raw
 from scapy.layers.l2 import Ether
 
-from src.packetprocessing.bbpacket import EODMsg, BBPacket, MsgSim2BB, \
+from lowcaf.packetprocessing.bbpacket import EODMsg, BBPacket, MsgSim2BB, \
     DecoderSim2BB, MsgBB2Sim
 
 LOGGER = logging.getLogger(__name__)

@@ -6,10 +6,10 @@ from typing import Callable
 import dearpygui.dearpygui as dpg
 from scapy.layers.l2 import Ether
 
-from src.nodeeditor.nodebuilder import NodeBuilder
-from src.nodes.ifaces.inode import INode
-from src.nodes.ifaces.rnode import RNode
-from src.packetprocessing.bbpacket import BBPacket
+from lowcaf.nodeeditor.nodebuilder import NodeBuilder
+from lowcaf.nodes.ifaces.inode import INode
+from lowcaf.nodes.ifaces.rnode import RNode
+from lowcaf.packetprocessing.bbpacket import BBPacket
 
 LOGGER = logging.getLogger(__name__)
 

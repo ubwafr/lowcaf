@@ -6,10 +6,10 @@ from typing import Optional, Callable
 import dearpygui.dearpygui as dpg
 from collections import deque
 
-from src.nodeeditor.nodebuilder import NodeBuilder
-from src.nodes.ifaces.inode import INode
-from src.nodes.ifaces.rnode import RNode
-from src.nodes.jgf.jnode import JNode
+from lowcaf.nodeeditor.nodebuilder import NodeBuilder
+from lowcaf.nodes.ifaces.inode import INode
+from lowcaf.nodes.ifaces.rnode import RNode
+from lowcaf.nodes.jgf.jnode import JNode
 
 LOGGER = logging.getLogger(__name__)
 

@@ -9,12 +9,12 @@ import logging
 from multiprocessing import Pipe, Process
 from multiprocessing.connection import Connection
 
-from src.packetprocessing.nodeselector import PrioritySelector
-from src.packetprocessing.nodestate import NodeState
-from src.nodeeditor.portid import PortID
-from src.nodes.ifaces.rnode import RNode
-from src.packetprocessing.bbsocket import BBSocket
-from src.packetprocessing.msgdispatcher import socket_runner
+from lowcaf.packetprocessing.nodeselector import PrioritySelector
+from lowcaf.packetprocessing.nodestate import NodeState
+from lowcaf.nodeeditor.portid import PortID
+from lowcaf.nodes.ifaces.rnode import RNode
+from lowcaf.packetprocessing.bbsocket import BBSocket
+from lowcaf.packetprocessing.msgdispatcher import socket_runner
 
 LOGGER = logging.getLogger(__name__)
 

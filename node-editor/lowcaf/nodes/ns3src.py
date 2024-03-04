@@ -5,11 +5,11 @@ from typing import Callable, Optional
 
 import dearpygui.dearpygui as dpg
 
-from src.nodeeditor.nodebuilder import NodeBuilder
-from src.nodes.ifaces.inode import INode
-from src.nodes.ifaces.rnode import RNode
-from src.nodes.jgf.jnode import JNode
-from src.packetprocessing.bbpacket import BBPacket, EODMsg
+from lowcaf.nodeeditor.nodebuilder import NodeBuilder
+from lowcaf.nodes.ifaces.inode import INode
+from lowcaf.nodes.ifaces.rnode import RNode
+from lowcaf.nodes.jgf.jnode import JNode
+from lowcaf.packetprocessing.bbpacket import BBPacket, EODMsg
 
 
 class NS3SrcG(INode):
@@ -119,7 +119,7 @@ class NS3SrcN(RNode):
 
     def process(self, inputs: list[deque], outputs: list[list]):
         """
-        A src has no inputs and thus we don't use them.
+        A lowcaf has no inputs and thus we don't use them.
         """
         if not self.conn.poll():
             # Because we always signal ready to not stop the simulation, there

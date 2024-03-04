@@ -3,8 +3,8 @@ from collections import deque
 from multiprocessing.connection import Connection
 from typing import Callable
 
-from src.packetprocessing.bbpacket import BBPacket
-from src.nodes.ifaces.inode import INode
+from lowcaf.packetprocessing.bbpacket import BBPacket
+from lowcaf.nodes.ifaces.inode import INode
 
 
 class RNode:
