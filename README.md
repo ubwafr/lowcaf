@@ -5,7 +5,7 @@ The Lowcaf Framework allows you to visually analyze communication protocols. In 
 
 This repository consists of two parts:
 - The Python-based node editor
-- An ns-3 application that connects to the node editor
+- An ns-3 application that connects to the node editor (see the respective [README](./ns-3-connector-app/README.md))
 
 
 ## The Lowcaf Node Editor
