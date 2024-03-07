@@ -495,7 +495,7 @@ class NodeEditor:
         print('Checking Nodes:')
         for node in NodeBuilder.get_inode_cls():
             print(node.type_name(), end=' ... ')
-            test = node()
+            test = node(0)
             print(test.disp_name(), end=' ... ')
             test.to_jgf()
             print('OK')
