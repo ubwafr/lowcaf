@@ -5,14 +5,12 @@ import pkgutil
 import socket
 import warnings
 from collections import defaultdict
-from multiprocessing import Process, Queue
-from queue import Empty
 from typing import Type
 
 import dearpygui.dearpygui as dpg
 
-import resources.fonts
 import lowcaf.nodes
+import resources.fonts
 from lowcaf.nodeeditor.linkmanager import LinkManager
 from lowcaf.nodeeditor.nodebuilder import NodeBuilder
 from lowcaf.nodeeditor.nodemanager import NodeManager
@@ -26,8 +24,6 @@ from lowcaf.packetprocessing.packetprocessor import PacketProcessor
 for x in pkgutil.iter_modules(lowcaf.nodes.__path__):
     print(x.name)
     importlib.import_module(f'.{x.name}', 'lowcaf.nodes')
-
-# from screeninfo import get_monitors
 
 dpg.create_context()
 
@@ -63,14 +59,6 @@ class NodeEditor:
         self.node_mngr = NodeManager()
         self.link_mngr = LinkManager()
 
-        # self.nodes: dict[int, INode] = {}
-
-        # queue for communication with UDP server
-        self.q = Queue()
-
-        # the process of the UDP server
-        self.rx_proc = None
-
         with dpg.handler_registry() as self.key_input_reg:
             dpg.add_key_release_handler(key=dpg.mvKey_A,
                                         callback=self.right_click_cb,
@@ -95,22 +83,6 @@ class NodeEditor:
             dpg.add_item_clicked_handler(button=dpg.mvMouseButton_Right,
                                          callback=self.node_right_clicked)
             # dpg.add_item_hover_handler(callback=self.test)
-
-    @staticmethod
-    def run_udp_receiver(q):
-
-        server_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        server_socket.bind(('127.0.0.1', 12000))
-        server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-        port = server_socket.getsockname()[1]
-
-        print(f'UDP server listening on port {port}')
-
-        while True:
-            message, address = server_socket.recvfrom(1024)
-            print(message)
-            message = json.loads(message.decode('utf-8'))
-            q.put_nowait(message)
 
     def check_id_already_connected_to(
             self,
@@ -137,20 +109,8 @@ class NodeEditor:
         dpg.set_primary_window(self.main_window, True)
 
         while dpg.is_dearpygui_running():
-            try:
-                data = self.q.get_nowait()
-                print(data)
-
-                node_id = int(data['node_id'])
-
-                try:
-                    self.node_mngr.get_node_id(node_id).update(data)
-                except KeyError:
-                    warnings.warn(f'No node with ID {node_id}')
-            except Empty:
-                pass
-
             dpg.render_dearpygui_frame()
+
         # dpg.start_dearpygui()
         print('Terminated Application')
         dpg.destroy_context()
@@ -201,7 +161,6 @@ class NodeEditor:
         print(dpg_id)
 
         self.node_mngr.rem_dpg(dpg_id)
-        # del self.nodes[node_id]
 
         lnks = dpg.get_item_children(self.node_editor, 0)
         attrs = dpg.get_item_children(dpg_id, 1)
@@ -532,15 +491,6 @@ class NodeEditor:
 
         print(id_mapping)
 
-    def start_server_cb(self, sender, app_data):
-        if self.rx_proc is not None:
-            self.rx_proc.kill()
-        self.rx_proc = Process(target=NodeEditor.run_udp_receiver,
-                               args=(self.q,),
-                               daemon=True)
-
-        self.rx_proc.start()
-
     def check_nodes_cb(self):
         print('Checking Nodes:')
         for node in NodeBuilder.get_inode_cls():
@@ -574,11 +524,6 @@ class NodeEditor:
                     dpg.add_menu_item(
                         label='Run BBPacket Processor',
                         callback=self.run_pp_cb
-                    )
-                with dpg.menu(label='Server'):
-                    dpg.add_menu_item(
-                        label='Start UDP Server',
-                        callback=self.start_server_cb
                     )
                 with dpg.menu(label='BIT'):
                     dpg.add_menu_item(
