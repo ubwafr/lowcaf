@@ -1,0 +1,175 @@
+{
+  "graph": {
+    "directed": true,
+    "metadata": {
+      "dpcm": 60
+    },
+    "nodes": {
+      "55": {
+        "label": "Distribution",
+        "metadata": {
+          "id": 55,
+          "type": "DistG",
+          "position": [
+            338,
+            263
+          ],
+          "node_metadata": {}
+        }
+      },
+      "56": {
+        "label": "attr",
+        "metadata": {
+          "id": 56,
+          "type": "attr",
+          "position": [],
+          "node_metadata": {
+            "attr_id": 0
+          }
+        }
+      },
+      "58": {
+        "label": "attr",
+        "metadata": {
+          "id": 58,
+          "type": "attr",
+          "position": [],
+          "node_metadata": {
+            "attr_id": 0
+          }
+        }
+      },
+      "103": {
+        "label": "Counter",
+        "metadata": {
+          "id": 103,
+          "type": "CounterG",
+          "position": [
+            591,
+            770
+          ],
+          "node_metadata": {}
+        }
+      },
+      "83": {
+        "label": "attr",
+        "metadata": {
+          "id": 83,
+          "type": "attr",
+          "position": [],
+          "node_metadata": {
+            "attr_id": 0
+          }
+        }
+      },
+      "85": {
+        "label": "attr",
+        "metadata": {
+          "id": 85,
+          "type": "attr",
+          "position": [],
+          "node_metadata": {
+            "attr_id": 0
+          }
+        }
+      },
+      "0": {
+        "label": "Pcap Source",
+        "metadata": {
+          "id": 0,
+          "type": "PcapSourceG",
+          "position": [
+            105,
+            559
+          ],
+          "node_metadata": {}
+        }
+      },
+      "108": {
+        "label": "attr",
+        "metadata": {
+          "id": 108,
+          "type": "attr",
+          "position": [],
+          "node_metadata": {
+            "text": "Select a file",
+            "file_path": null,
+            "attr_id": 0
+          }
+        }
+      },
+      "1": {
+        "label": "Pcap Sink",
+        "metadata": {
+          "id": 1,
+          "type": "PcapSinkG",
+          "position": [
+            883,
+            775
+          ],
+          "node_metadata": {}
+        }
+      },
+      "119": {
+        "label": "attr",
+        "metadata": {
+          "id": 119,
+          "type": "attr",
+          "position": [],
+          "node_metadata": {
+            "text": "Select a file",
+            "file_path": null,
+            "attr_id": 0
+          }
+        }
+      }
+    },
+    "edges": [
+      {
+        "source": "108",
+        "target": "56",
+        "relation": "attr_attr_relation"
+      },
+      {
+        "source": "85",
+        "target": "119",
+        "relation": "attr_attr_relation"
+      },
+      {
+        "source": "58",
+        "target": "83",
+        "relation": "attr_attr_relation"
+      },
+      {
+        "source": "56",
+        "target": "55",
+        "relation": "attr_node_relation"
+      },
+      {
+        "source": "55",
+        "target": "58",
+        "relation": "node_attr_relation"
+      },
+      {
+        "source": "83",
+        "target": "103",
+        "relation": "attr_node_relation"
+      },
+      {
+        "source": "103",
+        "target": "85",
+        "relation": "node_attr_relation"
+      },
+      {
+        "source": "0",
+        "target": "108",
+        "relation": "node_attr_relation"
+      },
+      {
+        "source": "119",
+        "target": "1",
+        "relation": "attr_node_relation"
+      }
+    ]
+  }
+}

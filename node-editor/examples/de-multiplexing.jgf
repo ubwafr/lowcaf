@@ -1,0 +1,248 @@
+{
+  "graph": {
+    "directed": true,
+    "metadata": {
+      "dpcm": 60
+    },
+    "nodes": {
+      "56": {
+        "label": "attr",
+        "metadata": {
+          "id": 56,
+          "type": "attr",
+          "position": [],
+          "node_metadata": {
+            "attr_id": 0
+          }
+        }
+      },
+      "67": {
+        "label": "attr",
+        "metadata": {
+          "id": 67,
+          "type": "attr",
+          "position": [],
+          "node_metadata": {
+            "attr_id": 0
+          }
+        }
+      },
+      "69": {
+        "label": "attr",
+        "metadata": {
+          "id": 69,
+          "type": "attr",
+          "position": [],
+          "node_metadata": {
+            "attr_id": 1
+          }
+        }
+      },
+      "73": {
+        "label": "attr",
+        "metadata": {
+          "id": 73,
+          "type": "attr",
+          "position": [],
+          "node_metadata": {
+            "attr_id": 0
+          }
+        }
+      },
+      "84": {
+        "label": "attr",
+        "metadata": {
+          "id": 84,
+          "type": "attr",
+          "position": [],
+          "node_metadata": {
+            "attr_id": 0
+          }
+        }
+      },
+      "86": {
+        "label": "attr",
+        "metadata": {
+          "id": 86,
+          "type": "attr",
+          "position": [],
+          "node_metadata": {
+            "attr_id": 1
+          }
+        }
+      },
+      "90": {
+        "label": "attr",
+        "metadata": {
+          "id": 90,
+          "type": "attr",
+          "position": [],
+          "node_metadata": {
+            "attr_id": 0
+          }
+        }
+      },
+      "92": {
+        "label": "attr",
+        "metadata": {
+          "id": 92,
+          "type": "attr",
+          "position": [],
+          "node_metadata": {
+            "attr_id": 0
+          }
+        }
+      },
+      "100": {
+        "label": "attr",
+        "metadata": {
+          "id": 100,
+          "type": "attr",
+          "position": [],
+          "node_metadata": {
+            "attr_id": 0
+          }
+        }
+      },
+      "102": {
+        "label": "attr",
+        "metadata": {
+          "id": 102,
+          "type": "attr",
+          "position": [],
+          "node_metadata": {
+            "attr_id": 0
+          }
+        }
+      },
+      "110": {
+        "label": "attr",
+        "metadata": {
+          "id": 110,
+          "type": "attr",
+          "position": [],
+          "node_metadata": {
+            "attr_id": 0
+          }
+        }
+      },
+      "0": {
+        "label": "Pcap Source",
+        "metadata": {
+          "id": 0,
+          "type": "PcapSourceG",
+          "position": [
+            33,
+            551
+          ],
+          "node_metadata": {}
+        }
+      },
+      "136": {
+        "label": "attr",
+        "metadata": {
+          "id": 136,
+          "type": "attr",
+          "position": [],
+          "node_metadata": {
+            "text": "Select a file",
+            "file_path": null,
+            "attr_id": 0
+          }
+        }
+      }
+    },
+    "edges": [
+      {
+        "source": "86",
+        "target": "100",
+        "relation": "attr_attr_relation"
+      },
+      {
+        "source": "102",
+        "target": "69",
+        "relation": "attr_attr_relation"
+      },
+      {
+        "source": "56",
+        "target": "110",
+        "relation": "attr_attr_relation"
+      },
+      {
+        "source": "136",
+        "target": "73",
+        "relation": "attr_attr_relation"
+      },
+      {
+        "source": "84",
+        "target": "90",
+        "relation": "attr_attr_relation"
+      },
+      {
+        "source": "92",
+        "target": "67",
+        "relation": "attr_attr_relation"
+      },
+      {
+        "source": "67",
+        "target": "56",
+        "relation": "attr_node_relation"
+      },
+      {
+        "source": "69",
+        "target": "56",
+        "relation": "attr_node_relation"
+      },
+      {
+        "source": "56",
+        "target": "56",
+        "relation": "node_attr_relation"
+      },
+      {
+        "source": "73",
+        "target": "73",
+        "relation": "attr_node_relation"
+      },
+      {
+        "source": "73",
+        "target": "84",
+        "relation": "node_attr_relation"
+      },
+      {
+        "source": "73",
+        "target": "86",
+        "relation": "node_attr_relation"
+      },
+      {
+        "source": "90",
+        "target": "90",
+        "relation": "attr_node_relation"
+      },
+      {
+        "source": "90",
+        "target": "92",
+        "relation": "node_attr_relation"
+      },
+      {
+        "source": "100",
+        "target": "100",
+        "relation": "attr_node_relation"
+      },
+      {
+        "source": "100",
+        "target": "102",
+        "relation": "node_attr_relation"
+      },
+      {
+        "source": "110",
+        "target": "110",
+        "relation": "attr_node_relation"
+      },
+      {
+        "source": "0",
+        "target": "136",
+        "relation": "node_attr_relation"
+      }
+    ]
+  }
+}

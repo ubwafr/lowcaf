@@ -1,0 +1,481 @@
+{
+  "graph": {
+    "directed": true,
+    "metadata": {
+      "dpcm": 60
+    },
+    "nodes": {
+      "2": {
+        "label": "NS3 Source",
+        "metadata": {
+          "id": 2,
+          "type": "NS3SrcG",
+          "position": [
+            1378,
+            853
+          ],
+          "node_metadata": {}
+        }
+      },
+      "66": {
+        "label": "attr",
+        "metadata": {
+          "id": 66,
+          "type": "attr",
+          "position": [],
+          "node_metadata": {
+            "ip": [
+              192,
+              189,
+              0,
+              1
+            ],
+            "port": 12001,
+            "attr_id": 0
+          }
+        }
+      },
+      "3": {
+        "label": "NS3 Sink",
+        "metadata": {
+          "id": 3,
+          "type": "NS3SnkG",
+          "position": [
+            949,
+            895
+          ],
+          "node_metadata": {}
+        }
+      },
+      "76": {
+        "label": "attr",
+        "metadata": {
+          "id": 76,
+          "type": "attr",
+          "position": [],
+          "node_metadata": {
+            "ip": [
+              192,
+              189,
+              0,
+              1
+            ],
+            "port": 12000,
+            "attr_id": 0
+          }
+        }
+      },
+      "4": {
+        "label": "Distribution",
+        "metadata": {
+          "id": 4,
+          "type": "DistG",
+          "position": [
+            1093,
+            208
+          ],
+          "node_metadata": {}
+        }
+      },
+      "86": {
+        "label": "attr",
+        "metadata": {
+          "id": 86,
+          "type": "attr",
+          "position": [],
+          "node_metadata": {
+            "attr_id": 0
+          }
+        }
+      },
+      "88": {
+        "label": "attr",
+        "metadata": {
+          "id": 88,
+          "type": "attr",
+          "position": [],
+          "node_metadata": {
+            "attr_id": 0
+          }
+        }
+      },
+      "5": {
+        "label": "Counter",
+        "metadata": {
+          "id": 5,
+          "type": "CounterG",
+          "position": [
+            740,
+            854
+          ],
+          "node_metadata": {}
+        }
+      },
+      "103": {
+        "label": "attr",
+        "metadata": {
+          "id": 103,
+          "type": "attr",
+          "position": [],
+          "node_metadata": {
+            "attr_id": 0
+          }
+        }
+      },
+      "105": {
+        "label": "attr",
+        "metadata": {
+          "id": 105,
+          "type": "attr",
+          "position": [],
+          "node_metadata": {
+            "attr_id": 0
+          }
+        }
+      },
+      "6": {
+        "label": "Counter",
+        "metadata": {
+          "id": 6,
+          "type": "CounterG",
+          "position": [
+            865,
+            404
+          ],
+          "node_metadata": {}
+        }
+      },
+      "113": {
+        "label": "attr",
+        "metadata": {
+          "id": 113,
+          "type": "attr",
+          "position": [],
+          "node_metadata": {
+            "attr_id": 0
+          }
+        }
+      },
+      "115": {
+        "label": "attr",
+        "metadata": {
+          "id": 115,
+          "type": "attr",
+          "position": [],
+          "node_metadata": {
+            "attr_id": 0
+          }
+        }
+      },
+      "7": {
+        "label": "Multiplexer",
+        "metadata": {
+          "id": 7,
+          "type": "MuxG",
+          "position": [
+            1796,
+            625
+          ],
+          "node_metadata": {}
+        }
+      },
+      "134": {
+        "label": "attr",
+        "metadata": {
+          "id": 134,
+          "type": "attr",
+          "position": [],
+          "node_metadata": {
+            "attr_id": 0
+          }
+        }
+      },
+      "136": {
+        "label": "attr",
+        "metadata": {
+          "id": 136,
+          "type": "attr",
+          "position": [],
+          "node_metadata": {
+            "attr_id": 1
+          }
+        }
+      },
+      "123": {
+        "label": "attr",
+        "metadata": {
+          "id": 123,
+          "type": "attr",
+          "position": [],
+          "node_metadata": {
+            "attr_id": 0
+          }
+        }
+      },
+      "8": {
+        "label": "Demultiplexer",
+        "metadata": {
+          "id": 8,
+          "type": "DeMuxG",
+          "position": [
+            443,
+            391
+          ],
+          "node_metadata": {}
+        }
+      },
+      "140": {
+        "label": "attr",
+        "metadata": {
+          "id": 140,
+          "type": "attr",
+          "position": [],
+          "node_metadata": {
+            "attr_id": 0
+          }
+        }
+      },
+      "151": {
+        "label": "attr",
+        "metadata": {
+          "id": 151,
+          "type": "attr",
+          "position": [],
+          "node_metadata": {
+            "attr_id": 0
+          }
+        }
+      },
+      "153": {
+        "label": "attr",
+        "metadata": {
+          "id": 153,
+          "type": "attr",
+          "position": [],
+          "node_metadata": {
+            "attr_id": 1
+          }
+        }
+      },
+      "1": {
+        "label": "Repeater",
+        "metadata": {
+          "id": 1,
+          "type": "RepeaterG",
+          "position": [
+            471,
+            211
+          ],
+          "node_metadata": {}
+        }
+      },
+      "157": {
+        "label": "attr",
+        "metadata": {
+          "id": 157,
+          "type": "attr",
+          "position": [],
+          "node_metadata": {
+            "attr_id": 0
+          }
+        }
+      },
+      "159": {
+        "label": "attr",
+        "metadata": {
+          "id": 159,
+          "type": "attr",
+          "position": [],
+          "node_metadata": {
+            "attr_id": 0
+          }
+        }
+      },
+      "9": {
+        "label": "Time Series Gui",
+        "metadata": {
+          "id": 9,
+          "type": "GuiG",
+          "position": [
+            1893,
+            153
+          ],
+          "node_metadata": {}
+        }
+      },
+      "167": {
+        "label": "attr",
+        "metadata": {
+          "id": 167,
+          "type": "attr",
+          "position": [],
+          "node_metadata": {
+            "attr_id": 0
+          }
+        }
+      },
+      "0": {
+        "label": "Pcap Source",
+        "metadata": {
+          "id": 0,
+          "type": "PcapSourceG",
+          "position": [
+            201,
+            210
+          ],
+          "node_metadata": {}
+        }
+      },
+      "190": {
+        "label": "attr",
+        "metadata": {
+          "id": 190,
+          "type": "attr",
+          "position": [],
+          "node_metadata": {
+            "text": "Select a file",
+            "file_path": null,
+            "attr_id": 0
+          }
+        }
+      }
+    },
+    "edges": [
+      {
+        "source": "190",
+        "target": "157",
+        "relation": "attr_attr_relation"
+      },
+      {
+        "source": "159",
+        "target": "140",
+        "relation": "attr_attr_relation"
+      },
+      {
+        "source": "151",
+        "target": "113",
+        "relation": "attr_attr_relation"
+      },
+      {
+        "source": "153",
+        "target": "103",
+        "relation": "attr_attr_relation"
+      },
+      {
+        "source": "88",
+        "target": "134",
+        "relation": "attr_attr_relation"
+      },
+      {
+        "source": "66",
+        "target": "136",
+        "relation": "attr_attr_relation"
+      },
+      {
+        "source": "105",
+        "target": "76",
+        "relation": "attr_attr_relation"
+      },
+      {
+        "source": "123",
+        "target": "167",
+        "relation": "attr_attr_relation"
+      },
+      {
+        "source": "115",
+        "target": "86",
+        "relation": "attr_attr_relation"
+      },
+      {
+        "source": "2",
+        "target": "66",
+        "relation": "node_attr_relation"
+      },
+      {
+        "source": "76",
+        "target": "3",
+        "relation": "attr_node_relation"
+      },
+      {
+        "source": "86",
+        "target": "4",
+        "relation": "attr_node_relation"
+      },
+      {
+        "source": "4",
+        "target": "88",
+        "relation": "node_attr_relation"
+      },
+      {
+        "source": "103",
+        "target": "5",
+        "relation": "attr_node_relation"
+      },
+      {
+        "source": "5",
+        "target": "105",
+        "relation": "node_attr_relation"
+      },
+      {
+        "source": "113",
+        "target": "6",
+        "relation": "attr_node_relation"
+      },
+      {
+        "source": "6",
+        "target": "115",
+        "relation": "node_attr_relation"
+      },
+      {
+        "source": "134",
+        "target": "7",
+        "relation": "attr_node_relation"
+      },
+      {
+        "source": "136",
+        "target": "7",
+        "relation": "attr_node_relation"
+      },
+      {
+        "source": "7",
+        "target": "123",
+        "relation": "node_attr_relation"
+      },
+      {
+        "source": "140",
+        "target": "8",
+        "relation": "attr_node_relation"
+      },
+      {
+        "source": "8",
+        "target": "151",
+        "relation": "node_attr_relation"
+      },
+      {
+        "source": "8",
+        "target": "153",
+        "relation": "node_attr_relation"
+      },
+      {
+        "source": "157",
+        "target": "1",
+        "relation": "attr_node_relation"
+      },
+      {
+        "source": "1",
+        "target": "159",
+        "relation": "node_attr_relation"
+      },
+      {
+        "source": "167",
+        "target": "9",
+        "relation": "attr_node_relation"
+      },
+      {
+        "source": "0",
+        "target": "190",
+        "relation": "node_attr_relation"
+      }
+    ]
+  }
+}

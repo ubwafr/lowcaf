@@ -1,0 +1,112 @@
+{
+  "graph": {
+    "directed": true,
+    "metadata": {
+      "dpcm": 60
+    },
+    "nodes": {
+      "56": {
+        "label": "attr",
+        "metadata": {
+          "id": 56,
+          "type": "attr",
+          "position": [],
+          "node_metadata": {
+            "attr_id": 0
+          }
+        }
+      },
+      "79": {
+        "label": "Repeater",
+        "metadata": {
+          "id": 79,
+          "type": "RepeaterG",
+          "position": [
+            289,
+            519
+          ],
+          "node_metadata": {}
+        }
+      },
+      "78": {
+        "label": "attr",
+        "metadata": {
+          "id": 78,
+          "type": "attr",
+          "position": [],
+          "node_metadata": {
+            "attr_id": 0
+          }
+        }
+      },
+      "80": {
+        "label": "attr",
+        "metadata": {
+          "id": 80,
+          "type": "attr",
+          "position": [],
+          "node_metadata": {
+            "attr_id": 0
+          }
+        }
+      },
+      "0": {
+        "label": "Pcap Source",
+        "metadata": {
+          "id": 0,
+          "type": "PcapSourceG",
+          "position": [
+            48,
+            505
+          ],
+          "node_metadata": {}
+        }
+      },
+      "92": {
+        "label": "attr",
+        "metadata": {
+          "id": 92,
+          "type": "attr",
+          "position": [],
+          "node_metadata": {
+            "text": "Select a file",
+            "file_path": null,
+            "attr_id": 0
+          }
+        }
+      }
+    },
+    "edges": [
+      {
+        "source": "92",
+        "target": "78",
+        "relation": "attr_attr_relation"
+      },
+      {
+        "source": "80",
+        "target": "56",
+        "relation": "attr_attr_relation"
+      },
+      {
+        "source": "56",
+        "target": "56",
+        "relation": "attr_node_relation"
+      },
+      {
+        "source": "78",
+        "target": "79",
+        "relation": "attr_node_relation"
+      },
+      {
+        "source": "79",
+        "target": "80",
+        "relation": "node_attr_relation"
+      },
+      {
+        "source": "0",
+        "target": "92",
+        "relation": "node_attr_relation"
+      }
+    ]
+  }
+}

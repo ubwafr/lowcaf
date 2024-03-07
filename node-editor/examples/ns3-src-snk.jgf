@@ -1,0 +1,248 @@
+{
+  "graph": {
+    "directed": true,
+    "metadata": {
+      "dpcm": 60
+    },
+    "nodes": {
+      "66": {
+        "label": "Repeater",
+        "metadata": {
+          "id": 66,
+          "type": "RepeaterG",
+          "position": [
+            368,
+            366
+          ],
+          "node_metadata": {}
+        }
+      },
+      "77": {
+        "label": "attr",
+        "metadata": {
+          "id": 77,
+          "type": "attr",
+          "position": [],
+          "node_metadata": {
+            "attr_id": 0
+          }
+        }
+      },
+      "79": {
+        "label": "attr",
+        "metadata": {
+          "id": 79,
+          "type": "attr",
+          "position": [],
+          "node_metadata": {
+            "attr_id": 0
+          }
+        }
+      },
+      "76": {
+        "label": "NS3 Sink",
+        "metadata": {
+          "id": 76,
+          "type": "NS3SnkG",
+          "position": [
+            792,
+            362
+          ],
+          "node_metadata": {}
+        }
+      },
+      "87": {
+        "label": "attr",
+        "metadata": {
+          "id": 87,
+          "type": "attr",
+          "position": [],
+          "node_metadata": {
+            "ip": [
+              192,
+              168,
+              0,
+              1
+            ],
+            "port": 12000,
+            "attr_id": 0
+          }
+        }
+      },
+      "86": {
+        "label": "NS3 Source",
+        "metadata": {
+          "id": 86,
+          "type": "NS3SrcG",
+          "position": [
+            109,
+            609
+          ],
+          "node_metadata": {}
+        }
+      },
+      "97": {
+        "label": "attr",
+        "metadata": {
+          "id": 97,
+          "type": "attr",
+          "position": [],
+          "node_metadata": {
+            "ip": [
+              192,
+              168,
+              0,
+              1
+            ],
+            "port": 12001,
+            "attr_id": 0
+          }
+        }
+      },
+      "96": {
+        "label": "Counter",
+        "metadata": {
+          "id": 96,
+          "type": "CounterG",
+          "position": [
+            611,
+            359
+          ],
+          "node_metadata": {}
+        }
+      },
+      "107": {
+        "label": "attr",
+        "metadata": {
+          "id": 107,
+          "type": "attr",
+          "position": [],
+          "node_metadata": {
+            "attr_id": 0
+          }
+        }
+      },
+      "109": {
+        "label": "attr",
+        "metadata": {
+          "id": 109,
+          "type": "attr",
+          "position": [],
+          "node_metadata": {
+            "attr_id": 0
+          }
+        }
+      },
+      "106": {
+        "label": "Null Sink",
+        "metadata": {
+          "id": 106,
+          "type": "NullSnkG",
+          "position": [
+            440,
+            625
+          ],
+          "node_metadata": {}
+        }
+      },
+      "117": {
+        "label": "attr",
+        "metadata": {
+          "id": 117,
+          "type": "attr",
+          "position": [],
+          "node_metadata": {
+            "attr_id": 0
+          }
+        }
+      },
+      "0": {
+        "label": "Pcap Source",
+        "metadata": {
+          "id": 0,
+          "type": "PcapSourceG",
+          "position": [
+            140,
+            366
+          ],
+          "node_metadata": {}
+        }
+      },
+      "131": {
+        "label": "attr",
+        "metadata": {
+          "id": 131,
+          "type": "attr",
+          "position": [],
+          "node_metadata": {
+            "text": "Select a file",
+            "file_path": null,
+            "attr_id": 0
+          }
+        }
+      }
+    },
+    "edges": [
+      {
+        "source": "131",
+        "target": "77",
+        "relation": "attr_attr_relation"
+      },
+      {
+        "source": "79",
+        "target": "107",
+        "relation": "attr_attr_relation"
+      },
+      {
+        "source": "109",
+        "target": "87",
+        "relation": "attr_attr_relation"
+      },
+      {
+        "source": "97",
+        "target": "117",
+        "relation": "attr_attr_relation"
+      },
+      {
+        "source": "77",
+        "target": "66",
+        "relation": "attr_node_relation"
+      },
+      {
+        "source": "66",
+        "target": "79",
+        "relation": "node_attr_relation"
+      },
+      {
+        "source": "87",
+        "target": "76",
+        "relation": "attr_node_relation"
+      },
+      {
+        "source": "86",
+        "target": "97",
+        "relation": "node_attr_relation"
+      },
+      {
+        "source": "107",
+        "target": "96",
+        "relation": "attr_node_relation"
+      },
+      {
+        "source": "96",
+        "target": "109",
+        "relation": "node_attr_relation"
+      },
+      {
+        "source": "117",
+        "target": "106",
+        "relation": "attr_node_relation"
+      },
+      {
+        "source": "0",
+        "target": "131",
+        "relation": "node_attr_relation"
+      }
+    ]
+  }
+}

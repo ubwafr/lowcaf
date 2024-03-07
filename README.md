@@ -41,3 +41,5 @@ When launching the Node Editor a window with an initially empty node area appear
 - Exporting nodes: `File -> Export Nodes`
 
 **A Note on Privacy:** The JGF files are meant to be shared. However, be aware that certain nodes store absolute file paths, e.g., the nodes for writing or reading PCAPs.
+
+A few small JGF files can be found in the `node-editor/examples` directory.

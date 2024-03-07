@@ -1,0 +1,129 @@
+{
+  "graph": {
+    "directed": true,
+    "metadata": {
+      "dpcm": 60
+    },
+    "nodes": {
+      "55": {
+        "label": "NS3 Source",
+        "metadata": {
+          "id": 55,
+          "type": "NS3SrcG",
+          "position": [
+            119,
+            351
+          ],
+          "node_metadata": {}
+        }
+      },
+      "56": {
+        "label": "attr",
+        "metadata": {
+          "id": 56,
+          "type": "attr",
+          "position": [],
+          "node_metadata": {
+            "ip": [
+              192,
+              168,
+              0,
+              1
+            ],
+            "port": 12000,
+            "attr_id": 0
+          }
+        }
+      },
+      "65": {
+        "label": "Time Series Gui",
+        "metadata": {
+          "id": 65,
+          "type": "GuiG",
+          "position": [
+            803,
+            220
+          ],
+          "node_metadata": {}
+        }
+      },
+      "66": {
+        "label": "attr",
+        "metadata": {
+          "id": 66,
+          "type": "attr",
+          "position": [],
+          "node_metadata": {
+            "attr_id": 0
+          }
+        }
+      },
+      "84": {
+        "label": "Counter",
+        "metadata": {
+          "id": 84,
+          "type": "CounterG",
+          "position": [
+            511,
+            348
+          ],
+          "node_metadata": {}
+        }
+      },
+      "78": {
+        "label": "attr",
+        "metadata": {
+          "id": 78,
+          "type": "attr",
+          "position": [],
+          "node_metadata": {
+            "attr_id": 0
+          }
+        }
+      },
+      "80": {
+        "label": "attr",
+        "metadata": {
+          "id": 80,
+          "type": "attr",
+          "position": [],
+          "node_metadata": {
+            "attr_id": 0
+          }
+        }
+      }
+    },
+    "edges": [
+      {
+        "source": "56",
+        "target": "78",
+        "relation": "attr_attr_relation"
+      },
+      {
+        "source": "80",
+        "target": "66",
+        "relation": "attr_attr_relation"
+      },
+      {
+        "source": "55",
+        "target": "56",
+        "relation": "node_attr_relation"
+      },
+      {
+        "source": "66",
+        "target": "65",
+        "relation": "attr_node_relation"
+      },
+      {
+        "source": "78",
+        "target": "84",
+        "relation": "attr_node_relation"
+      },
+      {
+        "source": "84",
+        "target": "80",
+        "relation": "node_attr_relation"
+      }
+    ]
+  }
+}
