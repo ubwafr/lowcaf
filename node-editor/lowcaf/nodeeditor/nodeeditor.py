@@ -13,6 +13,7 @@ import dearpygui.dearpygui as dpg
 
 import resources.fonts
 import lowcaf.nodes
+from lowcaf.nodeeditor.linkmanager import LinkManager
 from lowcaf.nodeeditor.nodebuilder import NodeBuilder
 from lowcaf.nodeeditor.nodemanager import NodeManager
 from lowcaf.nodeeditor.portid import PortID
@@ -58,9 +59,9 @@ class NodeEditor:
             self._default_font = dpg.add_font(str(font), int(0.4 *
                                                              self.dpcm))
         self.build_main_window()
-        self.node_links = set()
 
         self.node_mngr = NodeManager()
+        self.link_mngr = LinkManager()
 
         # self.nodes: dict[int, INode] = {}
 
@@ -121,7 +122,7 @@ class NodeEditor:
         else:
             attr = 'attr_2'
 
-        for link in self.node_links:
+        for link in self.link_mngr.get_links():
             point = dpg.get_item_configuration(link)[attr]
             if point == attr_id:
                 return link
@@ -175,7 +176,7 @@ class NodeEditor:
         def check_remove_lnk(link):
             if link is not None:
                 dpg.delete_item(link)
-                self.node_links.remove(link)
+                self.link_mngr.remove_link(link)
 
         s = self.check_id_already_connected_to(start, start=True)
         e = self.check_id_already_connected_to(end, start=False)
@@ -185,7 +186,7 @@ class NodeEditor:
         # a node link also has an ID!!
         lnk = dpg.add_node_link(start, end, parent=parent,
                                 user_data=self)
-        self.node_links.add(lnk)
+        self.link_mngr.add_link(lnk)
 
         return lnk
 
@@ -227,7 +228,7 @@ class NodeEditor:
     def delink_cb(self, sender, app_data):
         # app_data -> link_id
         dpg.delete_item(app_data)
-        self.node_links.remove(app_data)
+        self.link_mngr.remove_link(app_data)
         print('delink called')
 
     def right_click_cb(self, sender, app_data):
@@ -302,7 +303,7 @@ class NodeEditor:
         dpg.set_value(txt, 'Building edge database ...')
         edges_db = {}
 
-        for link in self.node_links:
+        for link in self.link_mngr.get_links():
             conf = dpg.get_item_configuration(link)
             edges_db[conf['attr_1']] = conf['attr_2']
 
@@ -359,7 +360,7 @@ class NodeEditor:
         edges_db = data_db['graph']['edges']
         nodes_db = data_db['graph']['nodes']
 
-        for link in self.node_links:
+        for link in self.link_mngr.get_links():
             conf = dpg.get_item_configuration(link)
             start_attr = conf['attr_1']
             end_attr = conf['attr_2']
