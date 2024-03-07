@@ -170,7 +170,7 @@ class NodeEditor:
             for attr in attrs:
 
                 if lnk_conf['attr_2'] == attr or lnk_conf['attr_1'] == attr:
-                    nodeeditor = dpg.get_item_user_data(lnk)
+                    nodeeditor: NodeEditor = dpg.get_item_user_data(lnk)
                     nodeeditor.delink_cb(nodeeditor, lnk)
 
         dpg.configure_item(dpg_id, show=False)
@@ -525,6 +525,11 @@ class NodeEditor:
                         label='Run BBPacket Processor',
                         callback=self.run_pp_cb
                     )
+                    dpg.add_spacer(height=self.dpcm // 8)
+                    dpg.add_menu_item(
+                        label='Reset Node Editor',
+                        callback=self.reset_node_editor
+                    )
                 with dpg.menu(label='BIT'):
                     dpg.add_menu_item(
                         label='Check Nodes',
@@ -554,6 +559,14 @@ class NodeEditor:
                                callback=lambda: dpg.configure_item(
                                    "right_click_menu",
                                    show=False))
+
+    def reset_node_editor(self):
+        for dpg_id in self.node_mngr.dpg_ids():
+            self.remove_node(dpg_id)
+
+        self.node_mngr = NodeManager()
+        self.link_mngr = LinkManager()
+
 
     def node_right_clicked(self, sender, appdata, userdata):
         print(sender)

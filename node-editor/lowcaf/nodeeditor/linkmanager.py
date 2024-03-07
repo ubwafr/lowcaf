@@ -15,6 +15,5 @@ class LinkManager:
         self._links.remove(lnk)
 
     def get_links(self):
-        for lnk in self._links:
-            yield lnk
+        return self._links.copy()
 

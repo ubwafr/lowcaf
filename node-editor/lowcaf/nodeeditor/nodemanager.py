@@ -43,6 +43,9 @@ class NodeManager:
             inode = self._node_id2inode[node_id]
             yield (inode.node_id, inode.dpg_id), inode
 
+    def dpg_ids(self):
+        return list(self._dpg2inode.keys())
+
     def cpy_node_id_dict(self):
         return self._node_id2inode.copy()
 
