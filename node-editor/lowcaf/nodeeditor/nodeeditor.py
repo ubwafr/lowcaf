@@ -27,8 +27,6 @@ for x in pkgutil.iter_modules(lowcaf.nodes.__path__):
 
 dpg.create_context()
 
-NODE_EDITOR = 'node_editor'
-
 
 def cancel():
     """
@@ -38,6 +36,13 @@ def cancel():
     All other positions and even lambda functions seem to cause segfaults
     """
     pass
+
+
+class NodePlane:
+    def __init__(self, dpg_id: int | str):
+        self.dpg_id: int | str = dpg_id
+        self.node_mngr: NodeManager = NodeManager()
+        self.link_mngr: LinkManager = LinkManager()
 
 
 class NodeEditor:
@@ -54,10 +59,12 @@ class NodeEditor:
         with dpg.font_registry():
             self._default_font = dpg.add_font(str(font), int(0.4 *
                                                              self.dpcm))
+
+        self.tab_dict: dict[int | str, NodePlane] = {}
+
         self.build_main_window()
 
-        self.node_mngr = NodeManager()
-        self.link_mngr = LinkManager()
+        self.create_new_node_tab()
 
         with dpg.handler_registry() as self.key_input_reg:
             dpg.add_key_release_handler(key=dpg.mvKey_A,
@@ -94,7 +101,8 @@ class NodeEditor:
         else:
             attr = 'attr_2'
 
-        for link in self.link_mngr.get_links():
+        link_mngr = self.active_node_plane().link_mngr
+        for link in link_mngr.get_links():
             point = dpg.get_item_configuration(link)[attr]
             if point == attr_id:
                 return link
@@ -118,7 +126,7 @@ class NodeEditor:
     def link(self,
              start: int | str,
              end: int | str,
-             parent=NODE_EDITOR) -> int | str:
+             parent: int | str) -> int | str:
         """
         Add a link between two attributes.
 
@@ -133,10 +141,12 @@ class NodeEditor:
             ID of the created link
         """
 
+        link_mngr = self.active_node_plane().link_mngr
+
         def check_remove_lnk(link):
             if link is not None:
                 dpg.delete_item(link)
-                self.link_mngr.remove_link(link)
+                link_mngr.remove_link(link)
 
         s = self.check_id_already_connected_to(start, start=True)
         e = self.check_id_already_connected_to(end, start=False)
@@ -146,7 +156,7 @@ class NodeEditor:
         # a node link also has an ID!!
         lnk = dpg.add_node_link(start, end, parent=parent,
                                 user_data=self)
-        self.link_mngr.add_link(lnk)
+        link_mngr.add_link(lnk)
 
         return lnk
 
@@ -160,9 +170,11 @@ class NodeEditor:
         print(self)
         print(dpg_id)
 
-        self.node_mngr.rem_dpg(dpg_id)
+        plane = self.active_node_plane()
 
-        lnks = dpg.get_item_children(self.node_editor, 0)
+        plane.node_mngr.rem_dpg(dpg_id)
+
+        lnks = dpg.get_item_children(self.active_node_editor_dpgid(), 0)
         attrs = dpg.get_item_children(dpg_id, 1)
 
         for lnk in lnks:
@@ -171,7 +183,7 @@ class NodeEditor:
 
                 if lnk_conf['attr_2'] == attr or lnk_conf['attr_1'] == attr:
                     nodeeditor: NodeEditor = dpg.get_item_user_data(lnk)
-                    nodeeditor.delink_cb(nodeeditor, lnk)
+                    nodeeditor.delink_cb(nodeeditor, lnk, None)
 
         dpg.configure_item(dpg_id, show=False)
         dpg.delete_item(dpg_id)
@@ -184,10 +196,14 @@ class NodeEditor:
         self.link(app_data[0], app_data[1], parent=sender)
 
     # callback runs when user attempts to disconnect attributes
-    def delink_cb(self, sender, app_data):
+    def delink_cb(self, sender, app_data, user_data):
+        print('delink data')
+        print(f'sender {sender}, app_data {app_data}, user_data {user_data}')
         # app_data -> link_id
+        print(app_data)
         dpg.delete_item(app_data)
-        self.link_mngr.remove_link(app_data)
+        link_mngr = self.active_node_plane().link_mngr
+        link_mngr.remove_link(app_data)
         print('delink called')
 
     def right_click_cb(self, sender, app_data):
@@ -216,7 +232,8 @@ class NodeEditor:
                    parent: int | str,
                    pos: list[int] | None = None) -> str | int:
         node.submit(parent)
-        self.node_mngr.add_node(node)
+
+        self.active_node_plane().node_mngr.add_node(node)
         # self.nodes[node.dpg_id] = node
         node.show(self.dpcm, pos)
         return node.dpg_id
@@ -227,8 +244,9 @@ class NodeEditor:
 
         try:
             const: Type[INode] = NodeBuilder.get_name_inode_dict()[selected]
-            node_id = self.node_mngr.get_free_node_id()
-            self.add_n_show(const(node_id), NODE_EDITOR, pos)
+            node_id = self.active_node_plane().node_mngr.get_free_node_id()
+            self.add_n_show(const(node_id), self.active_node_editor_dpgid(),
+                            pos)
         except KeyError:
             raise ValueError(f'{selected} is not in the list of supported '
                              f'nodes')
@@ -244,6 +262,10 @@ class NodeEditor:
             dpg.add_separator()
             loader = dpg.add_progress_bar(label='Loading', width=5 * self.dpcm)
             running = dpg.add_loading_indicator(show=False)
+
+        plane = self.active_node_plane()
+        node_mngr = plane.node_mngr
+        link_mngr = plane.link_mngr
 
         # split frame is necessary, because the window will only be drawn in
         # the next frame if I understand correctly
@@ -262,14 +284,14 @@ class NodeEditor:
         dpg.set_value(txt, 'Building edge database ...')
         edges_db = {}
 
-        for link in self.link_mngr.get_links():
+        for link in link_mngr.get_links():
             conf = dpg.get_item_configuration(link)
             edges_db[conf['attr_1']] = conf['attr_2']
 
         dpg.set_value(txt, 'Building port mappings ...')
         dpg.set_value(loader, 0.2)
         pos2dpg: dict[int, PortID] = {}
-        for node_obj in self.node_mngr.values():
+        for node_obj in node_mngr.values():
             for idx, node_id in enumerate(node_obj.inputs):
                 pos2dpg[node_id] = PortID(node_obj.node_id, idx)
 
@@ -279,7 +301,7 @@ class NodeEditor:
         dpg.set_value(txt, 'Building link database ...')
         dpg.set_value(loader, 0.4)
         links: dict[int, dict[int, PortID]] = {}
-        for (node_id, _), node_obj in self.node_mngr.items():
+        for (node_id, _), node_obj in node_mngr.items():
             dat = {}
             for idx, out_node_id in enumerate(node_obj.outputs):
                 dat[idx] = pos2dpg[edges_db[out_node_id]]
@@ -289,7 +311,8 @@ class NodeEditor:
         dpg.set_value(txt, 'Finished setup')
         dpg.set_value(loader, 0.6)
 
-        node_d = NodeBuilder.convert_i2r_dict(self.node_mngr.cpy_node_id_dict())
+        node_d = NodeBuilder.convert_i2r_dict(
+            node_mngr.cpy_node_id_dict())
         pp = PacketProcessor(node_d, links)
 
         dpg.configure_item(running, show=True)
@@ -305,6 +328,10 @@ class NodeEditor:
         See: https://github.com/jsongraph/json-graph-specification
         """
 
+        plane = self.active_node_plane()
+        node_mngr = plane.node_mngr
+        link_mngr = plane.link_mngr
+
         data_db = {
             'graph': {
                 'directed': True,
@@ -319,7 +346,7 @@ class NodeEditor:
         edges_db = data_db['graph']['edges']
         nodes_db = data_db['graph']['nodes']
 
-        for link in self.link_mngr.get_links():
+        for link in link_mngr.get_links():
             conf = dpg.get_item_configuration(link)
             start_attr = conf['attr_1']
             end_attr = conf['attr_2']
@@ -331,7 +358,7 @@ class NodeEditor:
             edges_db.append(jedge.to_jgf())
 
         node_obj: INode
-        for node_obj in self.node_mngr.values():
+        for node_obj in node_mngr.values():
             _nodes, _edges = node_obj.to_jgf()
             nodes_db |= _nodes
             edges_db.extend(_edges)
@@ -383,6 +410,8 @@ class NodeEditor:
 
         with open(app_data['file_path_name'], 'r', encoding='utf-8') as reader:
             data = reader.read()
+
+        node_mngr = self.active_node_plane().node_mngr
 
         jgf = json.loads(data)
         nodes = jgf['graph']['nodes']
@@ -442,10 +471,10 @@ class NodeEditor:
 
                 id_to_use: int
                 jnode: JNode = node_data['jnode']
-                if self.node_mngr.is_node_id_free(jnode.node_id):
+                if node_mngr.is_node_id_free(jnode.node_id):
                     id_to_use = jnode.node_id
                 else:
-                    id_to_use = self.node_mngr.get_free_node_id()
+                    id_to_use = node_mngr.get_free_node_id()
                     warnings.warn(f'Node ID {jnode.node_id} already in use. '
                                   f'Using {id_to_use} instead.')
 
@@ -460,7 +489,7 @@ class NodeEditor:
                 pos = jnode.position
                 for val in pos:
                     int(val * (self.dpcm / old_dpcm))
-                self.add_n_show(inode, NODE_EDITOR, pos)
+                self.add_n_show(inode, self.active_node_editor_dpgid(), pos)
 
         # finally connect the "real" edges
         for edge in edge_list:
@@ -470,7 +499,7 @@ class NodeEditor:
                 self.link(
                     id_mapping[edge.source],
                     id_mapping[edge.target],
-                    NODE_EDITOR)
+                    self.active_node_editor_dpgid())
             except KeyError as e:
                 key = int(str(e))
 
@@ -530,18 +559,52 @@ class NodeEditor:
                         label='Reset Node Editor',
                         callback=self.reset_node_editor
                     )
+                    dpg.add_spacer(height=self.dpcm // 8)
+                    dpg.add_menu_item(
+                        label='New Tab',
+                        callback=self.create_new_node_tab
+                    )
                 with dpg.menu(label='BIT'):
                     dpg.add_menu_item(
                         label='Check Nodes',
                         callback=self.check_nodes_cb,
                     )
+            with dpg.tab_bar(callback=self.test_cb) as self.tabs:
+                dpg.add_tab_button(
+                    label='+',
+                    callback=self.create_new_node_tab,
+                )
+
+    def test_cb(self, a, b, c):
+        print("testcb")
+        print(f'a {a}, b {b}, c {c}')
+        print(f'{dpg.get_value(a)}')
+
+    def active_tab_dpg_id(self):
+        return dpg.get_value(self.tabs)
+
+    def active_node_editor_dpgid(self):
+        tab_id = self.active_tab_dpg_id()
+        plane = self.tab_dict[tab_id]
+        return plane.dpg_id
+
+    def active_node_plane(self) -> NodePlane:
+        tab_id = self.active_tab_dpg_id()
+        return self.tab_dict[tab_id]
+
+    def create_new_node_tab(self, label='default'):
+        with dpg.tab(
+                parent=self.tabs,
+                label=label,
+                order_mode=dpg.mvTabOrder_Leading
+        ) as tab:
             with dpg.node_editor(
                     callback=self.link_cb,
                     delink_callback=self.delink_cb,
                     minimap=True,
                     minimap_location=dpg.mvNodeMiniMap_Location_BottomRight,
-                    tag=NODE_EDITOR) as self.node_editor:
-                pass
+            ) as node_editor:
+                self.tab_dict[tab] = NodePlane(node_editor)
 
     def build_right_click_menu(self):
         with dpg.window(label="Right click window", modal=True, show=False,
@@ -561,12 +624,12 @@ class NodeEditor:
                                    show=False))
 
     def reset_node_editor(self):
-        for dpg_id in self.node_mngr.dpg_ids():
+        plane = self.active_node_plane()
+
+        for dpg_id in plane.node_mngr.dpg_ids():
             self.remove_node(dpg_id)
 
-        self.node_mngr = NodeManager()
-        self.link_mngr = LinkManager()
-
+        plane.node_mngr = NodeManager()
 
     def node_right_clicked(self, sender, appdata, userdata):
         print(sender)
@@ -577,9 +640,10 @@ class NodeEditor:
         print(dpg.get_item_configuration(sender))
         # self.right_click_cb(None, None)
 
+        node_mngr = self.active_node_plane().node_mngr
         # print(self.nodes)
-        print(self.node_mngr.get_dpg(appdata[1]))
-        node: INode = self.node_mngr.get_dpg(appdata[1])
+        print(node_mngr.get_dpg(appdata[1]))
+        node: INode = node_mngr.get_dpg(appdata[1])
         node.right_click_cb(self.remove_node)
 
 
