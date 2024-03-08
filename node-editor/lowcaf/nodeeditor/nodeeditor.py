@@ -556,11 +556,6 @@ class NodeEditor:
                     )
                     dpg.add_spacer(height=self.dpcm // 8)
                     dpg.add_menu_item(
-                        label='Reset Node Editor',
-                        callback=self.reset_node_editor
-                    )
-                    dpg.add_spacer(height=self.dpcm // 8)
-                    dpg.add_menu_item(
                         label='New Tab',
                         callback=self.create_new_node_tab
                     )
@@ -568,6 +563,16 @@ class NodeEditor:
                     dpg.add_menu_item(
                         label='Check Nodes',
                         callback=self.check_nodes_cb,
+                    )
+                with dpg.menu(label='Tabs'):
+                    dpg.add_menu_item(
+                        label='Reset Current Tab',
+                        callback=self.reset_node_editor
+                    )
+                    dpg.add_spacer(height=self.dpcm // 8)
+                    dpg.add_menu_item(
+                        label='Rename Current Tab',
+                        callback=self.rename_tab_cb
                     )
             with dpg.tab_bar(callback=self.test_cb) as self.tabs:
                 dpg.add_tab_button(
@@ -579,6 +584,15 @@ class NodeEditor:
         print("testcb")
         print(f'a {a}, b {b}, c {c}')
         print(f'{dpg.get_value(a)}')
+
+    def rename_tab_cb(self, a, b, c):
+        with dpg.window(modal=True):
+            input_text = dpg.add_input_text(width=5*self.dpcm)
+            dpg.add_button(
+                label='Ok',
+                callback=lambda a, b, c: dpg.set_item_label(c[0], dpg.get_value(c[1])),
+                user_data=(self.active_tab_dpg_id(), input_text))
+
 
     def active_tab_dpg_id(self):
         return dpg.get_value(self.tabs)
@@ -592,10 +606,10 @@ class NodeEditor:
         tab_id = self.active_tab_dpg_id()
         return self.tab_dict[tab_id]
 
-    def create_new_node_tab(self, label='default'):
+    def create_new_node_tab(self):
         with dpg.tab(
                 parent=self.tabs,
-                label=label,
+                label='New Tab',
                 order_mode=dpg.mvTabOrder_Leading
         ) as tab:
             with dpg.node_editor(
