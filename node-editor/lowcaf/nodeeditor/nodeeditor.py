@@ -2,7 +2,6 @@ import importlib
 import importlib.resources as res
 import json
 import pkgutil
-import socket
 import warnings
 from collections import defaultdict
 from typing import Type
@@ -11,9 +10,9 @@ import dearpygui.dearpygui as dpg
 
 import lowcaf.nodes
 import resources.fonts
-from lowcaf.nodeeditor.linkmanager import LinkManager
 from lowcaf.nodeeditor.nodebuilder import NodeBuilder
 from lowcaf.nodeeditor.nodemanager import NodeManager
+from lowcaf.nodeeditor.nodeplane import NodePlane
 from lowcaf.nodeeditor.portid import PortID
 from lowcaf.nodes.ifaces.inode import INode
 from lowcaf.nodes.jgf.jedge import JEdge
@@ -36,13 +35,6 @@ def cancel():
     All other positions and even lambda functions seem to cause segfaults
     """
     pass
-
-
-class NodePlane:
-    def __init__(self, dpg_id: int | str):
-        self.dpg_id: int | str = dpg_id
-        self.node_mngr: NodeManager = NodeManager()
-        self.link_mngr: LinkManager = LinkManager()
 
 
 class NodeEditor:
@@ -91,24 +83,6 @@ class NodeEditor:
                                          callback=self.node_right_clicked)
             # dpg.add_item_hover_handler(callback=self.test)
 
-    def check_id_already_connected_to(
-            self,
-            attr_id,
-            start: bool
-    ) -> None | str | int:
-        if start:
-            attr = 'attr_1'
-        else:
-            attr = 'attr_2'
-
-        link_mngr = self.active_node_plane().link_mngr
-        for link in link_mngr.get_links():
-            point = dpg.get_item_configuration(link)[attr]
-            if point == attr_id:
-                return link
-        else:
-            return None
-
     def start(self):
         dpg.create_viewport(title='Belligerent Blob', width=20 * self.dpcm,
                             height=10 * self.dpcm)
@@ -123,88 +97,19 @@ class NodeEditor:
         print('Terminated Application')
         dpg.destroy_context()
 
-    def link(self,
-             start: int | str,
-             end: int | str,
-             parent: int | str) -> int | str:
-        """
-        Add a link between two attributes.
-
-        If there is another link to the target, the other link will be removed
-
-        Args:
-            start: ID of the start attribute
-            end: ID of the end attribute
-            parent: ID of the parent
-
-        Returns:
-            ID of the created link
-        """
-
-        link_mngr = self.active_node_plane().link_mngr
-
-        def check_remove_lnk(link):
-            if link is not None:
-                dpg.delete_item(link)
-                link_mngr.remove_link(link)
-
-        s = self.check_id_already_connected_to(start, start=True)
-        e = self.check_id_already_connected_to(end, start=False)
-        check_remove_lnk(s)
-        check_remove_lnk(e)
-
-        # a node link also has an ID!!
-        lnk = dpg.add_node_link(start, end, parent=parent,
-                                user_data=self)
-        link_mngr.add_link(lnk)
-
-        return lnk
-
-    def remove_node(self, dpg_id: int):
-        """
-        Completely and safely removes a node
-
-        This function also takes care of links to this node
-        """
-        print("Remove Node was called")
-        print(self)
-        print(dpg_id)
-
-        plane = self.active_node_plane()
-
-        plane.node_mngr.rem_dpg(dpg_id)
-
-        lnks = dpg.get_item_children(self.active_node_editor_dpgid(), 0)
-        attrs = dpg.get_item_children(dpg_id, 1)
-
-        for lnk in lnks:
-            lnk_conf = dpg.get_item_configuration(lnk)
-            for attr in attrs:
-
-                if lnk_conf['attr_2'] == attr or lnk_conf['attr_1'] == attr:
-                    nodeeditor: NodeEditor = dpg.get_item_user_data(lnk)
-                    nodeeditor.delink_cb(nodeeditor, lnk, None)
-
-        dpg.configure_item(dpg_id, show=False)
-        dpg.delete_item(dpg_id)
 
     # callback runs when user attempts to connect attributes
     def link_cb(self, sender, app_data):
         # app_data -> (link_id1, link_id2)
         # sender is the nodeeditor
 
-        self.link(app_data[0], app_data[1], parent=sender)
+        link_mngr = self.active_node_plane().link_mngr
+        link_mngr.link(app_data[0], app_data[1], parent=sender)
 
     # callback runs when user attempts to disconnect attributes
     def delink_cb(self, sender, app_data, user_data):
-        print('delink data')
-        print(f'sender {sender}, app_data {app_data}, user_data {user_data}')
-        # app_data -> link_id
-        print(app_data)
-        dpg.delete_item(app_data)
         link_mngr = self.active_node_plane().link_mngr
-        link_mngr.remove_link(app_data)
-        print('delink called')
+        link_mngr.delink(app_data)
 
     def right_click_cb(self, sender, app_data):
         """
@@ -227,26 +132,19 @@ class NodeEditor:
             else:
                 dpg.configure_item("right_click_menu", show=False)
 
-    def add_n_show(self,
-                   node: INode,
-                   parent: int | str,
-                   pos: list[int] | None = None) -> str | int:
-        node.submit(parent)
-
-        self.active_node_plane().node_mngr.add_node(node)
-        # self.nodes[node.dpg_id] = node
-        node.show(self.dpcm, pos)
-        return node.dpg_id
-
     def add_node_cb(self, sender, app_data, userdata):
         selected = dpg.get_value(userdata)
         pos = dpg.get_item_pos('right_click_menu')
 
         try:
+            plane = self.active_node_plane()
             const: Type[INode] = NodeBuilder.get_name_inode_dict()[selected]
-            node_id = self.active_node_plane().node_mngr.get_free_node_id()
-            self.add_n_show(const(node_id), self.active_node_editor_dpgid(),
-                            pos)
+            node_id = plane.node_mngr.get_free_node_id()
+            plane.node_mngr.add_n_show(
+                const(node_id),
+                plane.dpg_id,
+                self.dpcm,
+                pos)
         except KeyError:
             raise ValueError(f'{selected} is not in the list of supported '
                              f'nodes')
@@ -411,7 +309,9 @@ class NodeEditor:
         with open(app_data['file_path_name'], 'r', encoding='utf-8') as reader:
             data = reader.read()
 
-        node_mngr = self.active_node_plane().node_mngr
+        plane = self.active_node_plane()
+        node_mngr = plane.node_mngr
+        link_mngr = plane.link_mngr
 
         jgf = json.loads(data)
         nodes = jgf['graph']['nodes']
@@ -489,17 +389,17 @@ class NodeEditor:
                 pos = jnode.position
                 for val in pos:
                     int(val * (self.dpcm / old_dpcm))
-                self.add_n_show(inode, self.active_node_editor_dpgid(), pos)
+                node_mngr.add_n_show(inode, plane.dpg_id, self.dpcm, pos)
 
         # finally connect the "real" edges
         for edge in edge_list:
             if edge.relation != JEDGE_REL_ATTR2:
                 continue
             try:
-                self.link(
+                link_mngr.link(
                     id_mapping[edge.source],
                     id_mapping[edge.target],
-                    self.active_node_editor_dpgid())
+                    plane.dpg_id)
             except KeyError as e:
                 key = int(str(e))
 
@@ -597,11 +497,6 @@ class NodeEditor:
     def active_tab_dpg_id(self):
         return dpg.get_value(self.tabs)
 
-    def active_node_editor_dpgid(self):
-        tab_id = self.active_tab_dpg_id()
-        plane = self.tab_dict[tab_id]
-        return plane.dpg_id
-
     def active_node_plane(self) -> NodePlane:
         tab_id = self.active_tab_dpg_id()
         return self.tab_dict[tab_id]
@@ -641,7 +536,7 @@ class NodeEditor:
         plane = self.active_node_plane()
 
         for dpg_id in plane.node_mngr.dpg_ids():
-            self.remove_node(dpg_id)
+            plane.remove_node(dpg_id)
 
         plane.node_mngr = NodeManager()
 
@@ -654,11 +549,10 @@ class NodeEditor:
         print(dpg.get_item_configuration(sender))
         # self.right_click_cb(None, None)
 
-        node_mngr = self.active_node_plane().node_mngr
-        # print(self.nodes)
-        print(node_mngr.get_dpg(appdata[1]))
-        node: INode = node_mngr.get_dpg(appdata[1])
-        node.right_click_cb(self.remove_node)
+        plane = self.active_node_plane()
+
+        node: INode = plane.node_mngr.get_dpg(appdata[1])
+        node.right_click_cb(plane.remove_node)
 
 
 if __name__ == '__main__':

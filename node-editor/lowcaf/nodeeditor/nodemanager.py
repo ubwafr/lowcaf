@@ -2,6 +2,19 @@ from lowcaf.nodes.ifaces.inode import INode
 
 
 class NodeManager:
+    """
+    The NodeManager associates INodes with the DPG IDs of the corresponding
+    node windows. It makes them searchable in both directions, i.e., either
+    by DPG ID or by the internal INode ID.
+
+    The reason why the DPG ID is not the same as the INode ID is that the
+    DPG ID needs to be globally unique, while the INode ID is only unique
+    within a Plane/Node Editor Tab. The user may need the INode ID, e.g.,
+    when sending data to a specific node from external sources and expects
+    these IDs to be static, especially when loading a JGF file. The DPG IDs
+    when not manually set are assigned in creation order of the nodes and
+    need not correspond to the IDs that the nodes hat in a previous run.
+    """
 
     def __init__(self):
         self._dpg2inode: dict[int, INode] = {}
@@ -13,6 +26,20 @@ class NodeManager:
     ):
         self._node_id2inode[inode.node_id] = inode
         self._dpg2inode[inode.dpg_id] = inode
+
+    def add_n_show(
+            self,
+            node: INode,
+            parent: int | str,
+            dpcm: int,
+            pos: list[int] | None = None,
+        ) -> str | int:
+        node.submit(parent)
+
+        self.add_node(node)
+        # self.nodes[node.dpg_id] = node
+        node.show(dpcm, pos)
+        return node.dpg_id
 
     def rem_dpg(self, dpg_id: int):
         ret = self._dpg2inode[dpg_id]
