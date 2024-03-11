@@ -522,7 +522,9 @@ class NodeEditor:
             dpg.add_text("Add Node")
             dpg.add_separator()
             combo = dpg.add_combo(
-                list(NodeBuilder.get_name_inode_dict().keys()), width=0)
+                list(NodeBuilder.get_name_inode_dict().keys()),
+                width=5*self.dpcm,
+            )
             with dpg.group(horizontal=True):
                 dpg.add_button(label="OK", width=0,
                                callback=self.add_node_cb,
