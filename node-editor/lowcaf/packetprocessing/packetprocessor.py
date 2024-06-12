@@ -75,6 +75,16 @@ class PacketProcessor:
         for node_state in self.nodes.values():
             print(node_state.viz())
 
+    def setup(self):
+        """
+        Before calling drive, this function performs initial setup and
+        configuration before the actual processing starts.
+        """
+        print("Setting Up Nodes ... ", end='')
+        for node_state in self.nodes.values():
+            node_state.node.setup(self.register_socket)
+        print("OK")
+
     def drive(self):
         """
         This is the main function driving the simulation.
@@ -87,12 +97,6 @@ class PacketProcessor:
             executing process
         """
 
-        print("Setting Up Nodes ... ", end='')
-        for node_state in self.nodes.values():
-            node_state.node.setup(self.register_socket)
-        print("OK")
-
-        # todo: move the stuff above into the priority selector
         ps = PrioritySelector(self)
 
         if len(self.socks) > 0:

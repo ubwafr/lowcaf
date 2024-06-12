@@ -215,6 +215,7 @@ class NodeEditor:
         node_d = NodeBuilder.convert_i2r_dict(
             node_mngr.cpy_node_id_dict())
         pp = PacketProcessor(node_d, links)
+        pp.setup()
 
         dpg.configure_item(go, user_data=(running, loader, txt, pp, go_nogo))
 
