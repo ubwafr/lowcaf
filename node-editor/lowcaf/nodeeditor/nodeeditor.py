@@ -167,6 +167,9 @@ class NodeEditor:
                 go = dpg.add_button(label='Continue', show=True,
                                     callback=self.pp_continue_cb)
 
+            teardown = dpg.add_button(label='Teardown', show=False,
+                                      callback=self.pp_teardown_cb)
+
         plane = self.active_node_plane()
         node_mngr = plane.node_mngr
         link_mngr = plane.link_mngr
@@ -217,8 +220,8 @@ class NodeEditor:
         pp = PacketProcessor(node_d, links)
         pp.setup()
 
-        dpg.configure_item(go, user_data=(running, loader, txt, pp, go_nogo))
-
+        dpg.configure_item(go, user_data=(running, loader, txt, pp, go_nogo,
+                                          teardown, runner))
         dpg.configure_item(go_nogo, show=True)
 
     def pp_continue_cb(self, a, b, user_data):
@@ -226,14 +229,24 @@ class NodeEditor:
         This callback fires after the PP and other configuration has been
         performed and the user has hit the continue button
         """
-        running, loader, txt, pp, go_nogo = user_data
+        running, loader, txt, pp, go_nogo, teardown, runner = user_data
         dpg.configure_item(go_nogo, show=False)
         dpg.configure_item(running, show=True)
         pp.drive()
-
         dpg.configure_item(running, show=False)
+
+        dpg.configure_item(teardown, user_data=(teardown, loader, txt, pp,
+                                                runner))
+        dpg.configure_item(teardown, show=True)
         dpg.set_value(loader, 1)
         dpg.set_value(txt, 'Simulation finished')
+
+    def pp_teardown_cb(self, a, b, user_data):
+        teardown, loader, txt, pp, runner = user_data
+
+        pp.teardown()
+        dpg.configure_item(teardown, show=False)
+        dpg.configure_item(runner, show=False)
 
     def export_nodes_jgf_cb(self, sender, app_data):
         """

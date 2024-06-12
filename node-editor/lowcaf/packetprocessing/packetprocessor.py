@@ -133,6 +133,7 @@ class PacketProcessor:
             print('No sockets in graph. Running in offline mode')
             self.sim_core(ps)
 
+    def teardown(self):
         for node_state in self.nodes.values():
             node_state.node.teardown()
 
