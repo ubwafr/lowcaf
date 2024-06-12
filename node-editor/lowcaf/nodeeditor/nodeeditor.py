@@ -1,6 +1,7 @@
 import importlib
 import importlib.resources as res
 import json
+import logging
 import pkgutil
 import warnings
 from collections import defaultdict
@@ -20,8 +21,10 @@ from lowcaf.nodes.jgf.jfgkeys import JNODE_ATTR_TYPE, JEDGE_REL_ATTR2
 from lowcaf.nodes.jgf.jnode import JNode
 from lowcaf.packetprocessing.packetprocessor import PacketProcessor
 
+LOGGER = logging.getLogger(__name__)
+
 for x in pkgutil.iter_modules(lowcaf.nodes.__path__):
-    print(x.name)
+    LOGGER.debug(x.name)
     importlib.import_module(f'.{x.name}', 'lowcaf.nodes')
 
 dpg.create_context()
@@ -555,8 +558,3 @@ class NodeEditor:
 
         node: INode = plane.node_mngr.get_dpg(appdata[1])
         node.right_click_cb(plane.remove_node)
-
-
-if __name__ == '__main__':
-    ne = NodeEditor()
-    ne.start()
