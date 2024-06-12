@@ -1,1 +1,1 @@
-xhost si:localuser:root
+xhost -si:localuser:root
