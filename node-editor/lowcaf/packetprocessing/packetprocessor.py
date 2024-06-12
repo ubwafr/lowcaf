@@ -135,7 +135,7 @@ class PacketProcessor:
         # only touch the sockets after the process has joined again
         LOGGER.info('Tearing down')
         for bb_sock in self.socks:
-            print(bb_sock)
+            LOGGER.info(f'Cleanup socket: {bb_sock}')
             if bb_sock.conn is not None:
                 bb_sock.conn.close()
 

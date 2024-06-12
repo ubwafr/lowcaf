@@ -6,6 +6,7 @@ from lowcaf.packetprocessing.bbsocket import BBSocket, EndOfDataError
 
 LOGGER = logging.getLogger(__name__)
 
+
 class ShutDownReceivedError(RuntimeError):
     pass
 
@@ -71,17 +72,12 @@ def exec_sel(sel: selectors.BaseSelector):
     LOGGER.debug(f'Received {len(events)} events')
     for key, mask in events:
         if key.data == (None, 'Terminate'):
-            print("--------------------------------------why")
             raise ShutDownReceivedError
 
-        print(key.data)
         bbsock: BBSocket = key.data[0]
         callback = key.data[1]
 
-        # print('running')
-
         if callback is None:
-            print("--------------------------------------why")
             raise ShutDownReceivedError
 
         # todo: for some reason the bbsock can be None, maybe we skip this
@@ -99,5 +95,3 @@ def exec_sel(sel: selectors.BaseSelector):
             pass
         except ConnectionResetError:
             bbsock.cleanup(sel)
-
-

@@ -1,9 +1,6 @@
 import logging
 import selectors
-
 import socket
-import warnings
-from enum import Enum, auto
 from multiprocessing.connection import Connection
 from typing import Optional
 
@@ -70,30 +67,22 @@ class BBSocket:
 
         data = self.conn_in_buff + received
         LOGGER.debug('Received Data from socket------------')
-        print(data)
         msgs, rem = DecoderSim2BB.buff2msgs(data)
-        print('hier 1')
         self.conn_in_buff = rem
-        print('hier 2')
-        print(msgs)
+
         for msg in msgs:
             match msg:
                 case MsgSim2BB():
-                    print('hier msgsim2bb')
                     msg: MsgSim2BB
-                    print(msg)
 
                     pkt = BBPacket(Ether(msg.data), msg.delay_ns)
-                    print(Ether(msg.data))
                     self.pipes[msg.node_id].send(pkt)
                 case EODMsg():
-                    print('hier eod')
                     for pipe in self.pipes.values():
                         pipe.send(msg)
 
                     raise EndOfDataError(self)
                 case _:
-                    print('hier error')
                     err_msg = f'Type {type(msg)} is not supported'
                     raise NotImplementedError(err_msg)
 
@@ -123,8 +112,6 @@ class BBSocket:
 
         print('Indicating shutdown to all clients')
         for conn in self.pipes.values():
-            print(sel)
-            print(conn)
             sel.unregister(conn)
 
             conn.send(EODMsg())
