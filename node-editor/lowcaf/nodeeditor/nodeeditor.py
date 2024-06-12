@@ -3,6 +3,7 @@ import importlib.resources as res
 import json
 import logging
 import pkgutil
+import time
 import warnings
 from collections import defaultdict
 from typing import Type
@@ -24,7 +25,7 @@ from lowcaf.packetprocessing.packetprocessor import PacketProcessor
 LOGGER = logging.getLogger(__name__)
 
 for x in pkgutil.iter_modules(lowcaf.nodes.__path__):
-    LOGGER.debug(x.name)
+    LOGGER.debug(f'Loading node {x.name}')
     importlib.import_module(f'.{x.name}', 'lowcaf.nodes')
 
 dpg.create_context()
@@ -45,12 +46,10 @@ class NodeEditor:
     def __init__(self):
         # load default font
         files = res.files(resources.fonts)
-        print(files)
+        LOGGER.debug(f'Dir for fonts: {files}')
         font = files.joinpath('Ubuntu-R.ttf')
 
         self.dpcm = 60
-
-        print(self.dpcm)
         with dpg.font_registry():
             self._default_font = dpg.add_font(str(font), int(0.4 *
                                                              self.dpcm))
@@ -87,7 +86,7 @@ class NodeEditor:
             # dpg.add_item_hover_handler(callback=self.test)
 
     def start(self):
-        dpg.create_viewport(title='Belligerent Blob', width=20 * self.dpcm,
+        dpg.create_viewport(title='Lowcaf', width=20 * self.dpcm,
                             height=10 * self.dpcm)
         dpg.setup_dearpygui()
         dpg.show_viewport()
@@ -97,9 +96,8 @@ class NodeEditor:
             dpg.render_dearpygui_frame()
 
         # dpg.start_dearpygui()
-        print('Terminated Application')
+        LOGGER.info('Terminated Application')
         dpg.destroy_context()
-
 
     # callback runs when user attempts to connect attributes
     def link_cb(self, sender, app_data):
@@ -124,8 +122,8 @@ class NodeEditor:
             app_data: norm
         """
         if dpg.is_key_down(dpg.mvKey_Control):
-            print(f"sender is: {sender}")
-            print(f"app_data is: {app_data}")
+            LOGGER.debug(f"sender is: {sender}")
+            LOGGER.debug(f"app_data is: {app_data}")
 
             config = dpg.get_item_configuration('right_click_menu')
             # if True:
@@ -157,12 +155,17 @@ class NodeEditor:
         """
         Export nodes to the packet processor
         """
+
         with dpg.window(label="Simulation State", modal=True, show=True,
                         autosize=True) as runner:
             txt = dpg.add_text("Loading")
             dpg.add_separator()
             loader = dpg.add_progress_bar(label='Loading', width=5 * self.dpcm)
             running = dpg.add_loading_indicator(show=False)
+
+            with dpg.group(horizontal=True, show=False) as go_nogo:
+                go = dpg.add_button(label='Continue', show=True,
+                                    callback=self.pp_continue_cb)
 
         plane = self.active_node_plane()
         node_mngr = plane.node_mngr
@@ -175,9 +178,6 @@ class NodeEditor:
         height = dpg.get_item_height(self.main_window) // 2
         width_popup = dpg.get_item_width(runner) // 2
         height_popup = dpg.get_item_height(runner) // 2
-
-        print((width, height))
-        print((width_popup, height_popup))
 
         pos = [width - width_popup, height - height_popup]
         dpg.set_item_pos(runner, pos)
@@ -216,6 +216,17 @@ class NodeEditor:
             node_mngr.cpy_node_id_dict())
         pp = PacketProcessor(node_d, links)
 
+        dpg.configure_item(go, user_data=(running, loader, txt, pp, go_nogo))
+
+        dpg.configure_item(go_nogo, show=True)
+
+    def pp_continue_cb(self, a, b, user_data):
+        """
+        This callback fires after the PP and other configuration has been
+        performed and the user has hit the continue button
+        """
+        running, loader, txt, pp, go_nogo = user_data
+        dpg.configure_item(go_nogo, show=False)
         dpg.configure_item(running, show=True)
         pp.drive()
 
@@ -251,8 +262,7 @@ class NodeEditor:
             conf = dpg.get_item_configuration(link)
             start_attr = conf['attr_1']
             end_attr = conf['attr_2']
-            print(conf)
-            print(f'Link from {start_attr} -> {end_attr}')
+            LOGGER.debug(f'Link from {start_attr} -> {end_attr}')
 
             jedge = JEdge(start_attr, end_attr, JEDGE_REL_ATTR2)
 
@@ -267,7 +277,7 @@ class NodeEditor:
         with open(app_data['file_path_name'], 'w', encoding='utf-8') as writer:
             writer.write(json.dumps(data_db, indent=2))
 
-        print(json.dumps(data_db, indent=2))
+        LOGGER.debug(json.dumps(data_db, indent=2))
 
     def _show_file_sel(self,
                        callback,
@@ -333,9 +343,9 @@ class NodeEditor:
             forward[jedge.source].append(jedge.target)
             reverse[jedge.target].append(jedge.source)
 
-        print('Forward and Reverse --------------------')
-        print(forward)
-        print(reverse)
+        LOGGER.debug('Forward and Reverse --------------------')
+        LOGGER.debug(forward)
+        LOGGER.debug(reverse)
         store = defaultdict(list)
         for node_id, node in jgf['graph']['nodes'].items():
             jnode = JNode.from_jgf(node)
@@ -362,7 +372,7 @@ class NodeEditor:
                 'out_attrs': out_attrs
             })
 
-        print(store)
+        LOGGER.debug(store)
 
         id_mapping: dict[int, int] = dict()
         for node_type, stored in store.items():
@@ -370,7 +380,7 @@ class NodeEditor:
             cls = tmp[node_type]
 
             for node_data in stored:
-                print(node_data)
+                LOGGER.debug(node_data)
 
                 id_to_use: int
                 jnode: JNode = node_data['jnode']
@@ -406,7 +416,7 @@ class NodeEditor:
             except KeyError as e:
                 key = int(str(e))
 
-                print('Error Resolving')
+                LOGGER.debug('Error Resolving')
 
                 for node_t, node_lst in store.items():
                     for node_d in node_lst:
@@ -421,7 +431,7 @@ class NodeEditor:
                                   f'outputs')
                 raise e
 
-        print(id_mapping)
+        LOGGER.debug(id_mapping)
 
     def check_nodes_cb(self):
         print('Checking Nodes:')
@@ -477,25 +487,21 @@ class NodeEditor:
                         label='Rename Current Tab',
                         callback=self.rename_tab_cb
                     )
-            with dpg.tab_bar(callback=self.test_cb) as self.tabs:
+            with dpg.tab_bar() as self.tabs:
                 dpg.add_tab_button(
                     label='+',
                     callback=self.create_new_node_tab,
                 )
 
-    def test_cb(self, a, b, c):
-        print("testcb")
-        print(f'a {a}, b {b}, c {c}')
-        print(f'{dpg.get_value(a)}')
-
     def rename_tab_cb(self, a, b, c):
         with dpg.window(modal=True):
-            input_text = dpg.add_input_text(width=5*self.dpcm)
+            input_text = dpg.add_input_text(width=5 * self.dpcm)
             dpg.add_button(
                 label='Ok',
-                callback=lambda a, b, c: dpg.set_item_label(c[0], dpg.get_value(c[1])),
+                callback=lambda a, b, c: dpg.set_item_label(
+                    c[0],
+                    dpg.get_value(c[1])),
                 user_data=(self.active_tab_dpg_id(), input_text))
-
 
     def active_tab_dpg_id(self):
         return dpg.get_value(self.tabs)
@@ -526,7 +532,7 @@ class NodeEditor:
             dpg.add_separator()
             combo = dpg.add_combo(
                 list(NodeBuilder.get_name_inode_dict().keys()),
-                width=5*self.dpcm,
+                width=5 * self.dpcm,
             )
             with dpg.group(horizontal=True):
                 dpg.add_button(label="OK", width=0,
@@ -546,13 +552,8 @@ class NodeEditor:
         plane.node_mngr = NodeManager()
 
     def node_right_clicked(self, sender, appdata, userdata):
-        print(sender)
-        print(appdata)
-        print(userdata)
-        print('test')
-
-        print(dpg.get_item_configuration(sender))
-        # self.right_click_cb(None, None)
+        LOGGER.debug(f'{sender}, {appdata}, {userdata}, '
+                     f'{dpg.get_item_configuration(sender)}')
 
         plane = self.active_node_plane()
 
