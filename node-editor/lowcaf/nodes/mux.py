@@ -7,9 +7,9 @@ so on until all outputs have received a packet. Then it starts again from
 the beginning. The multiplexer does the same thing. It will first take a
 packet from the first input, then from the second and so on.
 """
-
-
+import copy
 from collections import deque
+from typing import Literal
 
 import dearpygui.dearpygui as dpg
 
@@ -40,6 +40,14 @@ class DeMuxG(INode):
                                            direction=dpg.mvDir_Down,
                                            user_data=self.widget,
                                            callback=self.remove_output_cb)
+
+                    with dpg.group(horizontal=True):
+                        dpg.add_text("Mode")
+                        self.mode = dpg.add_combo(
+                            ['Alternate', 'Duplicate'],
+                            default_value='Alternate',
+                            width=200,
+                        )
 
         super().__init__(node_id, _id, _staging_container_id,
                          [self.in_attr], [])
@@ -77,6 +85,12 @@ class DeMuxG(INode):
         dpg.delete_item(attr_id)
         dpg.set_value(userdata, int(dpg.get_value(userdata)) - 1)
 
+
+    def _add_meta_data(self) -> dict:
+        return {
+            'mode': dpg.get_value(self.mode),
+        }
+
     def _from_jgf(self,
                   metadata,
                   in_attrs: list[JNode],
@@ -85,12 +99,14 @@ class DeMuxG(INode):
         for _ in out_attrs:
             self.add_output_cb(None, None, None)
 
+        dpg.set_value(self.mode, metadata['mode'])
 
 class DeMuxN(RNode):
     def __init__(
             self,
             node_id: int,
             nr_outputs: int,
+            mode: str,
             inode: DeMuxG | None,
     ):
         assert isinstance(inode, DeMuxG | None)
@@ -98,6 +114,7 @@ class DeMuxN(RNode):
 
         self.inode: DeMuxG | None = inode
         self.active_output: int = 0
+        self.mode: str = mode
 
     @staticmethod
     def create_from_inode(inode: DeMuxG) -> 'RNode':
@@ -105,15 +122,26 @@ class DeMuxN(RNode):
         return DeMuxN(
             inode.node_id,
             len(inode.outputs),
+            dpg.get_value(inode.mode),
             inode,
         )
 
     def process(self, inputs: list[deque[BBPacket]],
                 outputs: list[list[BBPacket]]):
         pkt: BBPacket = inputs[0].popleft()
-        outputs[self.active_output].append(pkt)
 
-        self.active_output = (self.active_output + 1) % self.nr_outputs
+        match self.mode:
+            case 'Alternate':
+                print('Alternate mode')
+                outputs[self.active_output].append(pkt)
+
+                self.active_output = (self.active_output + 1) % self.nr_outputs
+            case 'Duplicate':
+                print('Duplicate mode')
+                for output in outputs:
+                    output.append(copy.deepcopy(pkt))
+            case _:
+                raise ValueError(f'Invalid mode: {self.mode}')
 
     def is_ready(self, inputs: list[deque[BBPacket]]) -> bool:
         if len(inputs[0]) > 0:
