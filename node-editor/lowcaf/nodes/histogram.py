@@ -19,14 +19,6 @@ class HistogramG(INode):
         with dpg.stage() as _staging_container_id:
             with dpg.node(label="Gui", show=False) as _id:
                 with dpg.node_attribute() as self.in_attr:
-                    # dpg.add_simple_plot(
-                    #     default_value=self.data_x,
-                    #     height=100,
-                    #     width=100,
-                    #     show=True,
-                    #     histogram=True,
-                    #
-                    # )
                     with dpg.plot(label='Packet Sizes') as self.plot:
                         dpg.add_plot_legend()
 
@@ -37,15 +29,6 @@ class HistogramG(INode):
                             dpg.mvYAxis,
                             label='Nr. of Packets')
 
-                        # self.series = dpg.add_histogram_series(
-                        #     self.data_x,
-                        #     bins=1000,
-                        #     bar_scale=1,
-                        #     cumlative=False,
-                        #     max_range=10000,
-                        #     label='Bytes Tx',
-                        #     parent=self.y_axis,
-                        # )
                         self.series = dpg.add_bar_series(
                             [],
                             [],
@@ -72,11 +55,6 @@ class HistogramG(INode):
         dpg.set_item_height(self.plot, 5 * dpcm)
 
     def update(self, data: dict):
-        # print(data['pkts'])
-        #
-        # self.data_x.append(10)
-        # print(self.data_x)
-
         nr_bytes = data['bytes']
 
         try:
