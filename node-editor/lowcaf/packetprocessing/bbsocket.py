@@ -80,8 +80,6 @@ class BBSocket:
                 case EODMsg():
                     for pipe in self.pipes.values():
                         pipe.send(msg)
-
-                    raise EndOfDataError(self)
                 case _:
                     err_msg = f'Type {type(msg)} is not supported'
                     raise NotImplementedError(err_msg)

@@ -71,27 +71,29 @@ def exec_sel(sel: selectors.BaseSelector):
     events = sel.select()
     LOGGER.debug(f'Received {len(events)} events')
     for key, mask in events:
+        LOGGER.debug(f'{key}: {mask}')
         if key.data == (None, 'Terminate'):
+            LOGGER.debug('Received Terminate --> Shutdown')
             raise ShutDownReceivedError
 
         bbsock: BBSocket = key.data[0]
         callback = key.data[1]
 
         if callback is None:
+            LOGGER.debug('No Callback --> Shutdown')
             raise ShutDownReceivedError
 
         # todo: for some reason the bbsock can be None, maybe we skip this
         #  case completely
         if bbsock is None:
+            LOGGER.debug('Socket None --> Continue')
             continue
         if not bbsock.is_terminated():
             LOGGER.debug(f'{key.data[2]}')
 
-        try:
-            callback(*key.data[2])
-        except EndOfDataError:
-            # todo: if all sockets are EOD and I am exhausted then we need to
-            #  initiate a stop here
-            pass
-        except ConnectionResetError:
-            bbsock.cleanup(sel)
+            try:
+                callback(*key.data[2])
+            except ConnectionResetError:
+                bbsock.cleanup(sel)
+        else:
+            LOGGER.debug('Socket already terminated')
