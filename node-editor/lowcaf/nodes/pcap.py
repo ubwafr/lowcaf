@@ -2,6 +2,7 @@ from multiprocessing.connection import Connection
 
 import dearpygui.dearpygui as dpg
 from scapy.all import *
+from scapy.contrib.loraphy2wan import PHYPayload
 
 from lowcaf.nodeeditor.nodebuilder import NodeBuilder
 from lowcaf.nodes.ifaces.inode import INode
@@ -110,8 +111,42 @@ class PcapSourceN(RNode):
     def process(self, inputs: list[deque], outputs: list[list]):
         try:
             LOGGER.debug("Read a packet")
+
+            meta = {}
             pkt = self.reader.read_packet()
-            outputs[0].append(BBPacket(pkt, 0))
+
+            if self.reader.linktype == 270:
+                # LoRaTap is not implemented in Scapy
+                pcap_bytes = raw(pkt)
+
+                tap = pcap_bytes[:35]
+                frequency = int.from_bytes(tap[4:8], 'big')
+                bandwidth = int.from_bytes(tap[8:9], 'big') * 125000
+                spread_f = int.from_bytes(tap[9:10], 'big')
+                coding_rate = int.from_bytes(tap[28:29], 'big')
+
+                phy = pcap_bytes[35:]
+
+                # save ts
+                ts = pkt.time
+
+                pkt = PHYPayload(phy)
+                pkt.time = ts
+
+                meta = {
+                    'lora_tap': {
+                        'frequency': frequency,
+                        'bandwidth': bandwidth,
+                        'spreading_factor': spread_f,
+                        'coding_rate': coding_rate
+                    }
+                }
+
+            outputs[0].append(BBPacket(
+                pkt,
+                0,
+                metadata=meta
+            ))
         except EOFError:
             LOGGER.info("PCAP is empty")
             self.reader.__exit__(None, None, None)

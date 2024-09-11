@@ -151,6 +151,8 @@ class SwitchN(RNode):
         self.field: str = field
         self.out_matchers: list[str] = out_matchers
 
+        self._tmp_dict = {}
+
     @staticmethod
     def create_from_inode(inode: SwitchG) -> 'RNode':
         assert isinstance(inode, SwitchG)
@@ -169,17 +171,21 @@ class SwitchN(RNode):
             outputs: list[list[BBPacket]]):
         pkt: BBPacket = inputs[0].popleft()
 
+        import scapy.contrib.loraphy2wan
+
         ssp = pkt.scapy_pkt
-        ssp = ssp.getlayer(self.layer)
+        scapy_pkt = ssp.getlayer(self.layer)
 
         try:
-            comp = ssp.getfieldval(self.field)
+            comp = scapy_pkt.getfieldval(self.field)
+            try:
+                self._tmp_dict[comp] += 1
+            except KeyError:
+                self._tmp_dict[comp] = 1
         except AttributeError as e:
-            print(ssp.fields)
+            ssp.show()
             raise AttributeError(f'{self.field} not present. See add output') \
                 from e
-
-        print(ssp.fields)
 
         for i, matcher in enumerate(self.out_matchers):
             if matcher == str(comp):
