@@ -1,5 +1,5 @@
 import logging
 
 logging.basicConfig(
-    level=logging.DEBUG,
+    level=logging.WARNING,
     format='%(levelname)s:%(module)s@%(lineno)s:%(message)s')
