@@ -43,6 +43,9 @@ class HistTimeG(INode):
                             [],
                             parent=self.y_axis
                         )
+                    with dpg.group(horizontal=True):
+                        self.fit = dpg.add_checkbox(default_value=True)
+                        dpg.add_text("Automatically fit plot to output")
                 with dpg.node_attribute(
                         attribute_type=dpg.mvNode_Attr_Output
                 ) as self.out_attr_valid:
@@ -80,8 +83,10 @@ class HistTimeG(INode):
         dpg.set_value(self.series, [list(self.data.keys()),
                                     list(self.data.values()), [],
                                     [], []])
-        dpg.fit_axis_data(self.y_axis)
-        dpg.fit_axis_data(self.x_axis)
+
+        if dpg.get_value(self.fit):
+            dpg.fit_axis_data(self.y_axis)
+            dpg.fit_axis_data(self.x_axis)
 
 
 def compute_time_on_air(

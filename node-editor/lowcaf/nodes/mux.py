@@ -132,12 +132,10 @@ class DeMuxN(RNode):
 
         match self.mode:
             case 'Alternate':
-                print('Alternate mode')
                 outputs[self.active_output].append(pkt)
 
                 self.active_output = (self.active_output + 1) % self.nr_outputs
             case 'Duplicate':
-                print('Duplicate mode')
                 for output in outputs:
                     output.append(copy.deepcopy(pkt))
             case _:

@@ -156,7 +156,7 @@ class NodeEditor:
         Export nodes to the packet processor
         """
 
-        with dpg.window(label="Simulation State", modal=True, show=True,
+        with dpg.window(label="Simulation State", modal=False, show=True,
                         autosize=True) as runner:
             txt = dpg.add_text("Loading")
             dpg.add_separator()
